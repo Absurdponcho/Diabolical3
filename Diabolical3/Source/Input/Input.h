@@ -6,6 +6,22 @@
 #include "Types/Action.h"
 #include "Types/DVector.h"
 
+struct SAxisEvent
+{
+	EAxisCode AxisCode;
+
+	float MotionX;
+	float MotionY;
+	float MotionZ;
+
+	// Used when there is an absolute position for the axis, e.g. Mouse position on screen
+	float AbsoluteX;
+	float AbsoluteY;
+	float AbsoluteZ;
+
+	bool bInputConsumed : 1;
+
+};
 
 struct SKeyEvent
 {
@@ -51,11 +67,15 @@ class DInputStack
 {
 public:
 	static EKeyCode FromSDLScanCode(uint16_t SDLScanCode);
-	static SKeyEvent FromSDLEvent(SDL_Event& Event);
+	static SKeyEvent KeyEventFromSDLEvent(SDL_Event& Event);
+	static SAxisEvent AxisEventFromSDLEvent(SDL_Event& Event);
 	static const char* KeyCodeToString(EKeyCode KeyCode);
 
 	void BroadcastKeyEvent(SKeyEvent KeyEvent);
+	void BroadcastAxisEvent(SAxisEvent KeyEvent);
+
 	DVector<DReturnEvent<SInputHandleResult, const SKeyEvent&>> KeyListeners;
+	DVector<DReturnEvent<SInputHandleResult, const SAxisEvent&>> AxisListeners;
 
 protected:
 

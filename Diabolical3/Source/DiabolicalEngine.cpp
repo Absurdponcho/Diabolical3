@@ -87,6 +87,9 @@ void DEngine::ManageAllTickFunctions()
 				case SDL_KEYUP:
 					WindowSdl->HandleSDLKeyEvent(Event);
 					break;
+				case SDL_MOUSEMOTION:
+					WindowSdl->HandleSDLAxisEvent(Event);
+					break;
 				}
 			}
 		}

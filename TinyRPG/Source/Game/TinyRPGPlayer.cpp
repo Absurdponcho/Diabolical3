@@ -3,6 +3,7 @@
 #include "Graphics/Rendering/CameraComponent.h"
 #include "Graphics/Rendering/MeshComponent.h"
 #include "Graphics/Window.h"
+#include "Time/Time.h"
 
 DRegisteredObject<DTinyRPGPlayer> RegisteredObject = DRegisteredObject<DTinyRPGPlayer>();
 DRegisteredObjectBase* DTinyRPGPlayer::GetRegisteredObject() const
@@ -13,8 +14,6 @@ DRegisteredObjectBase* DTinyRPGPlayer::GetRegisteredObject() const
 void DTinyRPGPlayer::PostConstruct()
 {
 	DPlayer::PostConstruct();
-
-	LOG("Tiny RPG Player init");
 }
 
 void DTinyRPGPlayer::Tick(const STickInfo& TickInfo)
@@ -70,6 +69,7 @@ void DTinyRPGPlayer::OnControlChanged(bool bIsControlled)
 		if (WindowShared.IsValid())
 		{
 			WindowShared->InputStack.KeyListeners.Add({ GetWeakThis(), &DTinyRPGPlayer::KeyListener });
+			WindowShared->InputStack.AxisListeners.Add({ GetWeakThis(), &DTinyRPGPlayer::AxisListener });
 		}
 
 		if (RemoteCube.IsValid())
@@ -83,6 +83,7 @@ void DTinyRPGPlayer::OnControlChanged(bool bIsControlled)
 		if (WindowShared.IsValid())
 		{
 			WindowShared->InputStack.KeyListeners.Remove({ GetWeakThis(), &DTinyRPGPlayer::KeyListener });
+			WindowShared->InputStack.AxisListeners.Remove({ GetWeakThis(), &DTinyRPGPlayer::AxisListener });
 		}
 
 		if (!RemoteCube.IsValid())
@@ -95,12 +96,13 @@ void DTinyRPGPlayer::OnControlChanged(bool bIsControlled)
 
 SInputHandleResult DTinyRPGPlayer::KeyListener(const SKeyEvent& KeyEvent)
 {
+	Check(IsControlled());
+
 	switch (KeyEvent.KeyCode)
 	{
 	case EKeyCode::KC_W:
 	case EKeyCode::KC_Up:
 	{
-		LOG("W");
 		InputVector.z += KeyEvent.bReleased ? 1 : -1;
 
 		SInputHandleResult HandleResult;
@@ -152,4 +154,23 @@ SInputHandleResult DTinyRPGPlayer::KeyListener(const SKeyEvent& KeyEvent)
 	}
 	}
 	return SInputHandleResult();
+}
+
+SInputHandleResult DTinyRPGPlayer::AxisListener(const SAxisEvent& AxisEvent)
+{
+	Check(IsControlled());
+
+	switch (AxisEvent.AxisCode)
+	{
+	case EAxisCode::AC_Mouse:
+		STransformf Transform = GetTransform();
+		SEulerRotationf EulerRotation = Transform.GetEulerRotation();
+		EulerRotation.y += AxisEvent.MotionX * 0.15f;
+		EulerRotation.x += AxisEvent.MotionY * 0.15f;
+		Transform.SetEulerRotation(EulerRotation);
+		SetTransform(Transform);
+		break;
+	}
+	return SInputHandleResult();
+
 }

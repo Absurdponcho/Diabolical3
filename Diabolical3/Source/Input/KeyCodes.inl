@@ -1,6 +1,12 @@
 #pragma once
 #include <stdint.h>
 
+enum class EAxisCode : uint16_t
+{
+	AC_Unknown = 0,
+	AC_Mouse,
+};
+
 enum class EKeyCode : uint16_t
 {
 	KC_Unknown = 0,

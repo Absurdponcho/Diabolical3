@@ -145,10 +145,16 @@ DWindowSDL::~DWindowSDL()
 
 void DWindowSDL::HandleSDLKeyEvent(SDL_Event& Event)
 {
-	SKeyEvent KeyEvent = DInputStack::FromSDLEvent(Event);
+	SKeyEvent KeyEvent = DInputStack::KeyEventFromSDLEvent(Event);
 	if (KeyEvent.bIsRepeat)
 	{
 		return;
 	}
 	InputStack.BroadcastKeyEvent(KeyEvent);
+}
+
+void DWindowSDL::HandleSDLAxisEvent(SDL_Event& Event)
+{
+	SAxisEvent AxisEvent = DInputStack::AxisEventFromSDLEvent(Event);
+	InputStack.BroadcastAxisEvent(AxisEvent);
 }

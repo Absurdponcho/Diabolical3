@@ -44,9 +44,28 @@ int main(int argc, char* argv[])
 		}
 
 		{	// Mesh
-			for (int x = 0; x < 1; x++)
+			for (int x = 2; x < 3; x++)
 			{
-				for (int z = 0; z < 1; z++)
+				for (int z = -5; z < 5; z++)
+				{
+					DObjectPtr<DSceneObject> MeshObject = DObject::CreateNew<DSceneObject>("Test Mesh Object");
+					GameWorld->AddSceneObject(MeshObject);
+
+					DObjectPtr<DCubeComponent> MeshComponent = DObject::CreateNew<DCubeComponent>("Test Cube Component");
+					MeshObject->RegisterComponent(MeshComponent);
+
+					STransformf MeshTransform;
+					MeshTransform.Position = { x * 2, 0, -z * 2 };
+					MeshTransform.Scale = SVector3f::OneVector;
+					MeshObject->SetTransform(MeshTransform);
+
+					MeshObjects.Add(MeshObject);
+				}
+			}
+
+			for (int x = -3; x < -2; x++)
+			{
+				for (int z = -5; z < 5; z++)
 				{
 					DObjectPtr<DSceneObject> MeshObject = DObject::CreateNew<DSceneObject>("Test Mesh Object");
 					GameWorld->AddSceneObject(MeshObject);
@@ -75,7 +94,7 @@ int main(int argc, char* argv[])
 		{
 			STransformf Transform = Object->GetTransform();
 			Transform.Position.y = sin(Index);
-			Object->SetTransform(Transform);
+			//Object->SetTransform(Transform);
 		}
 		Index += 0.05f;
 	}

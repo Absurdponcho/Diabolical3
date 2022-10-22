@@ -26,6 +26,7 @@ protected:
 	SDL_GLContext SdlGlContext = nullptr;
 
 	void HandleSDLKeyEvent(SDL_Event& Event);
+	void HandleSDLAxisEvent(SDL_Event& Event);
 
 	friend class DEngine;
 };

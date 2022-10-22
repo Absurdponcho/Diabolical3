@@ -12,6 +12,8 @@ public:
 	virtual void PostConstruct() override;
 
 	SInputHandleResult KeyListener(const SKeyEvent& KeyEvent);
+	SInputHandleResult AxisListener(const SAxisEvent& AxisEvent);
+
 	virtual void Tick(const STickInfo& TickInfo) override;
 	virtual void OnControlChanged(bool bIsControlled) override;
 

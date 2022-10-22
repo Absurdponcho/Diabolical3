@@ -6,6 +6,7 @@
 #include <glm/ext.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/euler_angles.hpp>
 
 struct SVector2f : public glm::vec2
 {
@@ -60,6 +61,41 @@ public:
 
 	static const SVector3f ZeroVector;
 	static const SVector3f OneVector;
+};
+
+struct SEulerRotationf : public SVector3f
+{
+public:
+	using SVector3f::SVector3f;
+
+	void ToQuat(struct SQuaternionf& OutQuat) const;
+
+	static float ClampAxis(float InAxis)
+	{
+		InAxis = fmod(InAxis, 360.0f);
+
+		if (InAxis < 0.0f)
+		{
+			InAxis += 360.0f;
+		}
+
+		return InAxis;
+	}
+
+	static float NormalizeAxis(float InAxis)
+	{
+		InAxis = ClampAxis(InAxis);
+
+		if (InAxis > 180.0f)
+		{
+			InAxis -= 360.0f;
+		}
+
+		return InAxis;
+	}
+
+	static const SEulerRotationf Identity;
+
 };
 
 struct SVector4f : public glm::vec4
@@ -154,6 +190,16 @@ public:
 	SQuaternionf(glm::quat In)
 		: glm::quat(In) {}
 
+	void ToEuler(struct SEulerRotationf& OutRotation) const;
+	SQuaternionf Normalized() const
+	{
+		return glm::normalize(*this);
+	}
+	SQuaternionf Conjugate() const
+	{
+		return glm::conjugate(*this);
+	}
+
 	static const SQuaternionf Identity;
 };
 
@@ -187,6 +233,13 @@ public:
 		return Rotation;
 	}
 
+	SEulerRotationf GetEulerRotation() const
+	{
+		SEulerRotationf Euler;
+		Rotation.Normalized().ToEuler(Euler);
+		return Euler;
+	}
+
 	const SVector3f& GetScale() const
 	{
 		return Scale;
@@ -199,12 +252,19 @@ public:
 
 	void SetRotation(const SQuaternionf& InRotation)
 	{
-		Rotation = InRotation;
+		Rotation = InRotation.Normalized();
 	}
 
 	void SetScale(const SVector3f& InScale)
 	{
 		Scale = InScale;
+	}
+
+	void SetEulerRotation(SEulerRotationf InRotation)
+	{
+		SQuaternionf Quat;
+		InRotation.ToQuat(Quat);
+		SetRotation(Quat);
 	}
 
 	bool Equals(const STransformf& Other) const

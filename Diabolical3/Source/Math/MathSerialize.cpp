@@ -75,3 +75,22 @@ bool DBitSerializer<SQuaternionf>::DeserializeOverride(DBitStream& BitStream)
 	Value->w = std::get<3>(Tuple);
 	return true;
 }
+
+// ======= SEulerRotationf =======
+template<>
+bool DBitSerializer<SEulerRotationf>::HasSerializeOverride()
+{
+	return true;
+}
+
+template<>
+bool DBitSerializer<SEulerRotationf>::SerializeOverride(DBitStream& BitStream)
+{
+	return DBitSerializer<SVector3f>(Value).Serialize(BitStream);
+}
+
+template<>
+bool DBitSerializer<SEulerRotationf>::DeserializeOverride(DBitStream& BitStream)
+{
+	return DBitSerializer<SVector3f>(Value).Deserialize(BitStream);
+}

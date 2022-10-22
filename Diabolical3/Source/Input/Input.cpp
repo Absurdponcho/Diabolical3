@@ -371,7 +371,7 @@ const char* DInputStack::KeyCodeToString(EKeyCode KeyCode)
 	}
 }
 
-SKeyEvent DInputStack::FromSDLEvent(SDL_Event& Event)
+SKeyEvent DInputStack::KeyEventFromSDLEvent(SDL_Event& Event)
 {
 	SDL_Keymod Keymod = SDL_GetModState();
 	switch (Event.type)
@@ -404,6 +404,32 @@ SKeyEvent DInputStack::FromSDLEvent(SDL_Event& Event)
 	}
 }
 
+SAxisEvent DInputStack::AxisEventFromSDLEvent(SDL_Event& Event)
+{
+	switch (Event.type)
+	{
+	case SDL_MOUSEMOTION:
+		SAxisEvent OutEvent;
+
+		OutEvent.AxisCode = EAxisCode::AC_Mouse;
+
+		OutEvent.MotionX = (float)Event.motion.xrel;
+		OutEvent.MotionY = (float)Event.motion.yrel;
+		OutEvent.MotionZ = 0;
+
+		OutEvent.AbsoluteX = (float)Event.motion.x;
+		OutEvent.AbsoluteY = (float)Event.motion.y;
+		OutEvent.AbsoluteZ = 0;
+
+		OutEvent.bInputConsumed = false;
+
+		return OutEvent;
+	default:
+		Check(false);
+		return SAxisEvent();
+	}
+}
+
 void DInputStack::BroadcastKeyEvent(SKeyEvent KeyEvent)
 {
 	for (DReturnEvent<SInputHandleResult, const SKeyEvent&>& Callback : KeyListeners)
@@ -412,6 +438,18 @@ void DInputStack::BroadcastKeyEvent(SKeyEvent KeyEvent)
 		if (Result.bConsumeInput)
 		{
 			KeyEvent.bInputConsumed = true;
+		}
+	}
+}
+
+void DInputStack::BroadcastAxisEvent(SAxisEvent AxisEvent)
+{
+	for (DReturnEvent<SInputHandleResult, const SAxisEvent&>& Callback : AxisListeners)
+	{
+		SInputHandleResult Result = Callback.Invoke(AxisEvent);
+		if (Result.bConsumeInput)
+		{
+			AxisEvent.bInputConsumed = true;
 		}
 	}
 }
