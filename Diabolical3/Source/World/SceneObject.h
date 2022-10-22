@@ -43,16 +43,35 @@ public:
 
 	STransformf GetTransform()
 	{
-		return Transform.Get();
+		return { Position.Get(), Scale.Get(), Rotation.Get() };
 	}
+
 	void SetTransform(const STransformf& InTransform)
 	{
-		Transform.Set(InTransform);
+		if (Position.Get() != InTransform.Position)
+		{
+			Position.Set(InTransform.Position);
+		}
+
+		if (Scale.Get() != InTransform.Scale)
+		{
+			Scale.Set(InTransform.Scale);
+		}
+
+		if (Rotation.Get() != InTransform.Rotation)
+		{
+			Rotation.Set(InTransform.Rotation);
+		}
 	}
 
 protected:
-	DSyncVar<STransformf> Transform;
+	DSyncVar<SVector3f> Position;
+	DSyncVar<SVector3f> Scale = SVector3f::OneVector;
+	DSyncVar<SQuaternionf> Rotation;
 
 	DSyncVar<DObjectPtr<class DWorld>> OwnerWorld;
 	DSyncVector<DObjectPtr<class DSceneComponent>> Components;
+	DVector<DObjectPtr<class DSceneComponent>> NonNetworkedComponents;
+
+	friend class DWorld;
 };

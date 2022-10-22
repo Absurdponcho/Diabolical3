@@ -7,6 +7,11 @@
 #include "ObjectRegistry.h"
 #include "Online/SyncVar.h"
 
+struct STickInfo
+{
+	float DeltaTime;
+};
+
 namespace internal
 {
 	static const unsigned int FRONT_SIZE = sizeof("internal::GetTypeNameHelper<") - 1u;
@@ -86,6 +91,13 @@ public:
 
 	virtual void OnReceiveSyncVarUpdate() {}
 
+	virtual void Tick(const STickInfo& TickInfo) {};
+
+	virtual void Destroy()
+	{
+		Check(false);
+	}
+
 	bool IsNetworked() const
 	{
 		return bIsNetworked;
@@ -109,6 +121,7 @@ public:
 	bool ClientHasNetOwnership(uint64_t ClientId) const;
 	void SetOwnershipOnClient(uint64_t ClientId);
 	bool IsNetRelevantFor(uint64_t ClientId) const;
+	bool IsRemoteClient() const;
 
 	virtual void CollectRelevantSubObjects(DRelevantSubObjectContainer& RelevantSubObjects) {}
 

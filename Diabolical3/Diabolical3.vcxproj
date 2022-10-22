@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -119,11 +119,13 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <Optimization>Disabled</Optimization>
-      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <IntrinsicFunctions>false</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,6 +142,13 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,6 +161,7 @@
     <ClCompile Include="Source\CommandLine\CmdLine.cpp" />
     <ClCompile Include="Source\DiabolicalEngine.cpp" />
     <ClCompile Include="Source\FileSystem\Filesystem.cpp" />
+    <ClCompile Include="Source\Game\GameMode.cpp" />
     <ClCompile Include="Source\Graphics\Rendering\CubeComponent.cpp" />
     <ClCompile Include="Source\Graphics\Rendering\MeshComponent.cpp" />
     <ClCompile Include="Source\Graphics\Rendering\CameraComponent.cpp" />
@@ -161,6 +171,8 @@
     <ClCompile Include="Source\Graphics\Rendering\RenderComponent.cpp" />
     <ClCompile Include="Source\Graphics\Rendering\RenderThread.cpp" />
     <ClCompile Include="Source\Graphics\Window.cpp" />
+    <ClCompile Include="Source\Graphics\WindowSDL.cpp" />
+    <ClCompile Include="Source\Input\Input.cpp" />
     <ClCompile Include="Source\Logging\Logging.cpp" />
     <ClCompile Include="Source\Math\Math.cpp" />
     <ClCompile Include="Source\Math\MathSerialize.cpp" />
@@ -172,12 +184,14 @@
     <ClCompile Include="Source\Thread\GameThread.cpp" />
     <ClCompile Include="Source\Thread\ScopedMutex.cpp" />
     <ClCompile Include="Source\Thread\Thread.cpp" />
+    <ClCompile Include="Source\Time\Time.cpp" />
+    <ClCompile Include="Source\Types\Action.cpp" />
     <ClCompile Include="Source\Types\BitStream.cpp" />
     <ClCompile Include="Source\Types\DMemory.cpp" />
     <ClCompile Include="Source\World\Object.cpp" />
     <ClCompile Include="Source\World\ObjectManager.cpp" />
     <ClCompile Include="Source\World\ObjectRegistry.cpp" />
-    <ClCompile Include="Source\World\Player.cpp" />
+    <ClCompile Include="Source\Game\Player.cpp" />
     <ClCompile Include="Source\World\SceneComponent.cpp" />
     <ClCompile Include="Source\World\SceneObject.cpp" />
     <ClCompile Include="Source\World\World.cpp" />
@@ -188,6 +202,7 @@
     <ClInclude Include="Source\CommandLine\CmdLine.h" />
     <ClInclude Include="Source\DiabolicalEngine.h" />
     <ClInclude Include="Source\FileSystem\Filesystem.h" />
+    <ClInclude Include="Source\Game\GameMode.h" />
     <ClInclude Include="Source\Graphics\Rendering\MeshComponent.h" />
     <ClInclude Include="Source\Graphics\Rendering\CameraComponent.h" />
     <ClInclude Include="Source\Graphics\Rendering\Material.h" />
@@ -197,6 +212,8 @@
     <ClInclude Include="Source\Graphics\Rendering\RenderComponent.h" />
     <ClInclude Include="Source\Graphics\Rendering\RenderThread.h" />
     <ClInclude Include="Source\Graphics\Window.h" />
+    <ClInclude Include="Source\Graphics\WindowSDL.h" />
+    <ClInclude Include="Source\Input\Input.h" />
     <ClInclude Include="Source\Logging\Logging.h" />
     <ClInclude Include="Source\Math\GLM\MathGLM.h" />
     <ClInclude Include="Source\Math\Math.h" />
@@ -214,6 +231,7 @@
     <ClInclude Include="Source\Thread\ScopedMutex.h" />
     <ClInclude Include="Source\Thread\Thread.h" />
     <ClInclude Include="Source\Thread\ThreadsafeContainer.h" />
+    <ClInclude Include="Source\Time\Time.h" />
     <ClInclude Include="Source\Types\Action.h" />
     <ClInclude Include="Source\Types\BitStream.h" />
     <ClInclude Include="Source\Types\DMemory.h" />
@@ -223,10 +241,13 @@
     <ClInclude Include="Source\World\Object.h" />
     <ClInclude Include="Source\World\ObjectManager.h" />
     <ClInclude Include="Source\World\ObjectRegistry.h" />
-    <ClInclude Include="Source\World\Player.h" />
+    <ClInclude Include="Source\Game\Player.h" />
     <ClInclude Include="Source\World\SceneComponent.h" />
     <ClInclude Include="Source\World\SceneObject.h" />
     <ClInclude Include="Source\World\World.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\Input\KeyCodes.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

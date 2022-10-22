@@ -402,7 +402,7 @@ void DServer::EnsureSubObjectRelevancyForClient(SServerClientData& ClientData)
 		}
 
 		EnsureSubObjectRelevancyForObject(ClientData, Pair.second);
-		LOG(DString::Format("Ensuring relevancy for primary object %s", *Pair.second->GetDisplayName()));
+		//LOG(DString::Format("Ensuring relevancy for primary object %s", *Pair.second->GetDisplayName()));
 	}
 }
 
@@ -420,7 +420,7 @@ void DServer::EnsureSubObjectRelevancyForObject(SServerClientData& ClientData, D
 	{
 		if (!ClientData.RelevantNetSubObjects.Contains(Pair.first) && !ClientData.RelevantNetObjects.Contains(Pair.first))
 		{
-			LOG(DString::Format("Ensuring relevancy for sub object %s", *Pair.second->GetDisplayName()));
+			//LOG(DString::Format("Ensuring relevancy for sub object %s", *Pair.second->GetDisplayName()));
 			AddList.Add(Pair.second);
 		}
 	}

@@ -20,6 +20,11 @@ uint64_t DObject::RegisterRPC(DNetRPCBase* Rpc)
 	return RegisteredRpcs.Size() - 1;
 }
 
+bool DObject::IsRemoteClient() const
+{
+	return DNetworkManager::GetClient();
+}
+
 bool DObject::HasNetOwnership() const
 {
 	if (DNetworkManager::GetServer())
@@ -68,6 +73,7 @@ bool DObject::GetOwnerClients(DVector<uint64_t>& OutClientIds) const
 				OutClientIds.Add(ServerClientData.ClientId);
 			}
 		}
+
 		return OutClientIds.Size() > 0;
 	}
 
@@ -84,14 +90,14 @@ void DObject::SetOwnershipOnClient(uint64_t ClientId)
 		{
 			if (ServerClientData.ClientId == ClientId)
 			{
-				if (!ServerClientData.OwnershipNetObjects.Contains(ClientId))
+				if (!ServerClientData.OwnershipNetObjects.Contains(NetworkID))
 				{
 					if (!ServerClientData.RelevantNetObjects.Contains(NetworkID))
 					{
 						// Client has no relevancy of this object, so add relevancy.
 						Server->ClientInitializeDObject(ServerClientData, GetWeakThis());
 					}
-					ServerClientData.OwnershipNetObjects.Add(ClientId);
+					ServerClientData.OwnershipNetObjects.Add(NetworkID);
 					Server->SetNetOwnership({ ServerClientData.ClientId }, NetworkID, true);
 				}
 				return;
@@ -106,7 +112,23 @@ void DObject::SetOwnershipOnClient(uint64_t ClientId)
 
 DObjectPtr<DObject> DObject::GetWeakThis()
 {
+	if (IsNetworked())
+	{
+		if (DObjectPtr<DObject>* Ptr = DEngine::ObjectManager->NetworkedObjects.Find(NetworkID))
+		{
+			return *Ptr;
+		}
+	}
+
 	for (DSharedPtr<DObject>& Object : DEngine::ObjectManager->ManagedObjects)
+	{
+		if (Object.GetRaw() == this)
+		{
+			return Object;
+		}
+	}
+
+	for (DSharedPtr<DObject>& Object : DEngine::ObjectManager->DeferredRegister)
 	{
 		if (Object.GetRaw() == this)
 		{

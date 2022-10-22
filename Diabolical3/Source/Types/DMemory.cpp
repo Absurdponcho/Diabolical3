@@ -7,7 +7,7 @@ bool DObjectPtrBase::SetFromNetworkId()
 	DObjectPtr<DObject> NetObject;
 	if (!DEngine::ObjectManager->GetObjectFromNetworkId(NetworkId, NetObject))
 	{
-		LOG(DString::Format("object not on net %llu", NetworkId));
+		//LOG(DString::Format("object not on net %llu", NetworkId));
 		return false;
 	}
 
@@ -26,7 +26,7 @@ bool DObjectPtrBase::Serialize(class DBitStream& BitStream)
 		DObject* Internal = static_cast<DObject*>(GetPtrInternal());
 		if (Internal->IsNetworked())
 		{
-			LOG(DString::Format("Serialize DObjectptr %s", *Internal->GetDisplayName()));
+			//LOG(DString::Format("Serialize DObjectptr %s", *Internal->GetDisplayName()));
 			return BitStream.AddPackedUInt(Internal->GetNetworkId());
 		}
 		else

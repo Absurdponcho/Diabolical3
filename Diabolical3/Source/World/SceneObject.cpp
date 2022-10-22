@@ -18,7 +18,9 @@ void DSceneObject::RegisterSyncVars(DVector<DSyncVarBase*>& SyncVars)
 	DObject::RegisterSyncVars(SyncVars);	
 	SyncVars.Add(&OwnerWorld);
 	SyncVars.Add(&Components);
-	SyncVars.Add(&Transform);
+	SyncVars.Add(&Position);
+	SyncVars.Add(&Scale);
+	SyncVars.Add(&Rotation);
 }
 
 void DSceneObject::OnReceiveSyncVarUpdate()
@@ -72,21 +74,43 @@ void DSceneObject::RegisterComponent(DObjectPtr<DSceneComponent> Component)
 		return;
 	}
 
-	Components.Add(Component);
+	if (Component->IsNetworked())
+	{
+		Components.Add(Component);
+		SetDirtyRelevantSubObjects();
+	}
+	else
+	{
+		NonNetworkedComponents.Add(Component);
+	}
 	Component->SetParent(GetWeakThis());
-	SetDirtyRelevantSubObjects();
 }
 
 void DSceneObject::RemoveComponent(DObjectPtr<DSceneComponent> Component)
 {
-	for (int Index = 0; Index < Components.Size(); Index++)
+	if (Component->IsNetworked())
 	{
-		if (Component.Get() == Components[Index].Get())
+		for (int Index = 0; Index < Components.Size(); Index++)
 		{
-			Component->SetParent(DObjectPtr<DSceneObject>());
-			Components.RemoveAt(Index);
-			SetDirtyRelevantSubObjects();
-			return;
+			if (Component.Get() == Components[Index].Get())
+			{
+				Component->SetParent(DObjectPtr<DSceneObject>());
+				Components.RemoveAt(Index);
+				SetDirtyRelevantSubObjects();
+				return;
+			}
+		}
+	}
+	else
+	{
+		for (int Index = 0; Index < NonNetworkedComponents.Size(); Index++)
+		{
+			if (Component.Get() == NonNetworkedComponents[Index].Get())
+			{
+				Component->SetParent(DObjectPtr<DSceneObject>());
+				NonNetworkedComponents.RemoveAt(Index);
+				return;
+			}
 		}
 	}
 }
@@ -98,12 +122,26 @@ bool DSceneObject::HasComponent(DObjectPtr<DSceneComponent> InComponent)
 		return false;
 	}
 
-	for (int Index = 0; Index < Components.Size(); Index++)
+	if (InComponent->IsNetworked())
 	{
-		DObjectPtr<DSceneComponent> Component = Components[Index];
-		if (Component.Get() == InComponent.Get())
+		for (int Index = 0; Index < Components.Size(); Index++)
 		{
-			return true;
+			DObjectPtr<DSceneComponent> Component = Components[Index];
+			if (Component.Get() == InComponent.Get())
+			{
+				return true;
+			}
+		}
+	}
+	else
+	{
+		for (int Index = 0; Index < NonNetworkedComponents.Size(); Index++)
+		{
+			DObjectPtr<DSceneComponent> Component = NonNetworkedComponents[Index];
+			if (Component.Get() == InComponent.Get())
+			{
+				return true;
+			}
 		}
 	}
 	return false;

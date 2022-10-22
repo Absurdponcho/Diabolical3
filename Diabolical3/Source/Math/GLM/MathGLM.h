@@ -17,6 +17,17 @@ public:
 	template <typename X, typename Y>
 	SVector2f(X x, Y y) : glm::vec2(x, y) {}
 
+	inline float Length() const
+	{
+		return glm::length((glm::vec2)*this);
+	}
+
+	inline SVector2f Normalized() const
+	{
+		float ThisLength = Length();
+		return SVector2f(x / ThisLength, y / ThisLength);
+	}
+
 	static const SVector2f ZeroVector;
 	static const SVector2f OneVector;
 };
@@ -36,6 +47,17 @@ public:
 	SVector3f(X x, Y y, Z z) 
 		: glm::vec3(x, y, z) {}
 
+	inline float Length() const
+	{
+		return glm::length((glm::vec3)*this);
+	}
+
+	inline SVector3f Normalized() const
+	{
+		float ThisLength = Length();
+		return SVector3f(x / ThisLength, y / ThisLength, z / ThisLength);
+	}
+
 	static const SVector3f ZeroVector;
 	static const SVector3f OneVector;
 };
@@ -53,6 +75,17 @@ public:
 
 	template <typename X, typename Y, typename Z, typename W>
 	SVector4f(X x, Y y, Z z, W w) : glm::vec4(x, y, z, w) {}
+
+	inline float Length() const
+	{
+		return glm::length((glm::vec4)*this);
+	}
+
+	inline SVector4f Normalized() const
+	{
+		float ThisLength = Length();
+		return SVector4f(x / ThisLength, y / ThisLength, z / ThisLength, w / ThisLength);
+	}
 
 	static const SVector4f ZeroVector;
 	static const SVector4f OneVector;
@@ -132,11 +165,10 @@ public:
 	STransformf(SVector3f InPosition, SVector3f InScale)
 		: Position(InPosition), Scale(InScale) {}
 
-	SVector3f Position = SVector3f::ZeroVector;
-	SVector3f Scale = SVector3f::OneVector;
-	SQuaternionf Rotation = SQuaternionf::Identity;
+	STransformf(SVector3f InPosition, SVector3f InScale, SQuaternionf InRotation)
+		: Position(InPosition), Scale(InScale), Rotation(InRotation) {}
 
-	SMatrix44f GetModelMatrix()
+	SMatrix44f GetModelMatrix() const
 	{
 		SMatrix44f ModelMatrix = SMatrix44f::Identity;
 		ModelMatrix = glm::translate(ModelMatrix, Position);
@@ -145,7 +177,56 @@ public:
 		return ModelMatrix;
 	}
 
+	const SVector3f& GetPosition() const
+	{
+		return Position;
+	}
+
+	const SQuaternionf& GetRotation() const
+	{
+		return Rotation;
+	}
+
+	const SVector3f& GetScale() const
+	{
+		return Scale;
+	}
+
+	void SetPosition(const SVector3f& InPosition)
+	{
+		Position = InPosition;
+	}
+
+	void SetRotation(const SQuaternionf& InRotation)
+	{
+		Rotation = InRotation;
+	}
+
+	void SetScale(const SVector3f& InScale)
+	{
+		Scale = InScale;
+	}
+
+	bool Equals(const STransformf& Other) const
+	{
+		return Other.Position == Position && Other.Scale == Scale && Other.Rotation == Rotation;
+	}
+
+	bool operator==(const STransformf& Other) const
+	{
+		return Equals(Other);
+	}
+
+	bool operator!=(const STransformf& Other) const
+	{
+		return !Equals(Other);
+	}
+
 	static const STransformf Identity;
+
+	SVector3f Position = SVector3f::ZeroVector;
+	SVector3f Scale = SVector3f::OneVector;
+	SQuaternionf Rotation = SQuaternionf::Identity;
 };
 
 #endif

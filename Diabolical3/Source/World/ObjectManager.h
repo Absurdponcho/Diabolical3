@@ -36,12 +36,26 @@ public:
 	bool GetObjectFromNetworkId(uint64_t NetworkId, DObjectPtr<class DObject>& OutObject);
 
 protected:
+	DVector<DSharedPtr<class DObject>> DeferredRegister;
 	DVector<DSharedPtr<class DObject>> ManagedObjects;
 	DMap<uint64_t, DObjectPtr<class DObject>> NetworkedObjects;
 	void RegisterObject(DSharedPtr<class DObject>& Object);
 
+	bool bIsTicking = false;
+	void SetTicking(bool bTicking)
+	{
+		bIsTicking = bTicking;
+		if (!bTicking)
+		{
+			for (DSharedPtr<class DObject>& Object : DeferredRegister)
+			{
+				RegisterObject(Object);
+			}
+			DeferredRegister.Clear();
+		}
+	}
 private:
 	void NetRegisterObject(DSharedPtr<class DObject>& Object);
 	friend class DObject;
-
+	friend class DEngine;
 };

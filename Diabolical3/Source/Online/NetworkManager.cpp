@@ -7,6 +7,7 @@
 #include "World/ObjectManager.h"
 #include "DiabolicalEngine.h"
 #include "Thread/GameThread.h"
+#include "Game/GameMode.h"
 
 DServer* DNetworkManager::Server = nullptr;
 DClient* DNetworkManager::Client = nullptr;
@@ -61,6 +62,7 @@ void DNetworkManager::TryListen(const DString& ListenString)
 			DGameThread::Invoke(DAction<uint64_t>([](uint64_t ClientId)
 				{
 					DEngine::ObjectManager->SendAllNetRelevantObjectsForNewConnection(ClientId);
+					DGameMode::BroadcastNewClient(ClientId);
 				}, ClientId)
 			);
 		});

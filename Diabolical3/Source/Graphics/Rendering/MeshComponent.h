@@ -25,4 +25,22 @@ public:
 	virtual void RegisterSyncVars(DVector<DSyncVarBase*>& SyncVars) override;
 
 	virtual void Render(DObjectPtr<class DCameraComponent> CameraComponent) override;
+
+	virtual void PostConstruct() override;
+
+protected:
+	DSharedPtr<class DMaterialInstance> MaterialInstance;
+};
+
+class DCubeComponentLocal : public DCubeComponent
+{
+public:
+	DCubeComponentLocal()
+	{
+		bIsNetworked = false;
+	}
+	virtual ~DCubeComponentLocal() {};
+
+	virtual DRegisteredObjectBase* GetRegisteredObject() const override;
+
 };

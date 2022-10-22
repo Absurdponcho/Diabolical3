@@ -10,18 +10,22 @@
 #include "Types/Map.h"
 #include "Online/Server.h"
 #include "Online/RPC.h"
-#include "Graphics/Window.h"
+#include "Graphics/WindowSDL.h"
 #include "World/SceneObject.h"
 #include "World/SceneComponent.h"
 #include "Graphics/Rendering/CameraComponent.h"
 #include "Graphics/Rendering/MeshComponent.h"
+#include "Game/TinyRPGGameMode.h"
 
 int main(int argc, char* argv[])
 {
 	DEngine::InitAll(argc, argv);
+
 	DObjectPtr<DWorld> GameWorld;
 	DVector<DObjectPtr<DSceneObject>> MeshObjects;
 	DObjectPtr<DWindow> GameWindow = DObjectPtr<DWindow>();
+	DObjectPtr<DTinyRPGGameMode> GameMode = DObjectPtr<DTinyRPGGameMode>();
+
 	if (!DNetworkManager::IsDedicatedServer())
 	{
 		GameWindow = DWindowSDL::MakeNew("TinyRPG", 200, 200, 800, 600);
@@ -30,24 +34,19 @@ int main(int argc, char* argv[])
 	if (DNetworkManager::GetServer())
 	{
 		GameWorld = DObject::CreateNew<DWorld>("Test World");
-		
-		{	// Camera
-			DObjectPtr<DSceneObject> CameraObject = DObject::CreateNew<DSceneObject>("Test Camera Object");
-			GameWorld->AddSceneObject(CameraObject);
+		GameMode = DObject::CreateNew<DTinyRPGGameMode>("TinyRPG Game Mode");
+		GameMode->SetGameWorld(GameWorld);
 
-			DObjectPtr<DCameraComponent> CameraComponent = DObject::CreateNew<DCameraComponent>("Test Camera Component");
-			CameraObject->RegisterComponent(CameraComponent);
-
-			STransformf CameraTransform;
-			CameraTransform.Position = { 0, 10, 10 };
-			CameraTransform.Scale = SVector3f::OneVector;
-			CameraObject->SetTransform(CameraTransform);
+		if (!DNetworkManager::IsDedicatedServer())
+		{
+			// Generate a player for the server player
+			GameMode->CreateNewPlayerObject();
 		}
 
 		{	// Mesh
-			for (int x = -4; x < 5; x++)
+			for (int x = 0; x < 1; x++)
 			{
-				for (int z = 5; z < 50; z++)
+				for (int z = 0; z < 1; z++)
 				{
 					DObjectPtr<DSceneObject> MeshObject = DObject::CreateNew<DSceneObject>("Test Mesh Object");
 					GameWorld->AddSceneObject(MeshObject);
@@ -66,6 +65,7 @@ int main(int argc, char* argv[])
 		}
 	}
 	
+
 	float Index = 0;
 	while (true) 
 	{

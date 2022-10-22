@@ -1,6 +1,7 @@
 #pragma once
 #include "Logging/Logging.h"
 #include <functional>
+#include "Types/DMemory.h"
 
 namespace SeqHelper
 {
@@ -161,4 +162,40 @@ public:
 
 protected:
 	bool bBound = false;
+};
+
+template<typename Retval, typename... Args>
+class DReturnEvent
+{
+public:
+	template <typename T>
+	DReturnEvent(DObjectPtr<class DObject> BindingObject, Retval(T::* MemberFunc)(Args...))
+		: BoundFunc([BindingObject, MemberFunc](Args... args) mutable
+			{
+				if (!BindingObject.IsValid())
+				{
+					return Retval();
+				}
+				return (DObjectPtr<T>(BindingObject).Get()->*MemberFunc)(args...);
+			}),
+		BoundObject(BindingObject)
+	{
+		FuncPtr = (void*)&MemberFunc;
+	};
+
+	Retval Invoke(Args... Arguments) const
+	{
+		return BoundFunc(Arguments...);
+	}
+
+	template<typename OtherRetval, typename... OtherArgs>
+	bool operator==(const DReturnEvent<OtherRetval, OtherArgs...>& Other)
+	{
+		return Other.BoundObject.Get() == BoundObject.Get() && Other.FuncPtr == FuncPtr;
+	}
+
+protected:
+	std::function<Retval(Args...)> BoundFunc;
+	DObjectPtr<class DObject> BoundObject;
+	void* FuncPtr = nullptr;
 };

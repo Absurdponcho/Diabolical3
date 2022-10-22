@@ -5,19 +5,20 @@
 #include "World/World.h"
 #include "World/ObjectManager.h"
 #include "Logging/Logging.h"
-#include <SDL2/SDL.h>
 #include "Graphics/Window.h"
-#include <GL/glew.h>
-#include <gl/GL.h>
+#include "Graphics/WindowSDL.h"
 #include "AssetManager/AssetManager.h"
 #include "Graphics/Rendering/Material.h"
 #include "Graphics/Rendering/RenderThread.h"
+#include "World/Object.h"
+#include "Time/Time.h"
 
 DObjectManager* DEngine::ObjectManager = nullptr;
 DRenderThread* DEngine::RenderThread = nullptr;
 
 void DEngine::InitAll(int argc, char* argv[])
 {
+
 	DCommandLine::Init(argc, argv);
 	DSocket::InitSockets();
 	DNetworkManager::Initialize();
@@ -36,6 +37,24 @@ void DEngine::InitAll(int argc, char* argv[])
 
 void DEngine::ManageAllTickFunctions()
 {
+	static float LastTickTime = 0;
+	float TimeSinceStart = DTime::GetSecondsSinceStart();
+
+	STickInfo TickInfo;
+	TickInfo.DeltaTime = TimeSinceStart - LastTickTime;
+	LastTickTime = TimeSinceStart;
+
+	ObjectManager->SetTicking(true);
+	for (auto& Object : ObjectManager->ManagedObjects)
+	{
+		if (!Object.IsValid())
+		{
+			return;
+		}
+		Object->Tick(TickInfo);
+	}
+	ObjectManager->SetTicking(false);
+
 	DGameThread::RunInvokedFunctions();
 	DServer* Server = DNetworkManager::GetServer();
 	if (Server)
@@ -56,14 +75,19 @@ void DEngine::ManageAllTickFunctions()
 		SDL_Event Event;
 		while (SDL_PollEvent(&Event))
 		{
-			switch (Event.type) {
-				case SDL_QUIT:
-				DSharedPtr<DWindow> WindowSdl = DWindowSDL::GetFromSdlId(Event.window.windowID).Lock();
-				if (WindowSdl.IsValid())
+			DSharedPtr<DWindowSDL> WindowSdl = DWindowSDL::GetFromSdlId(Event.window.windowID).Lock();
+			if (WindowSdl.IsValid())
+			{
+				switch (Event.type) 
 				{
+				case SDL_QUIT:
 					WindowSdl->Close();
+					break;
+				case SDL_KEYDOWN:
+				case SDL_KEYUP:
+					WindowSdl->HandleSDLKeyEvent(Event);
+					break;
 				}
-				break;
 			}
 		}
 
@@ -75,11 +99,11 @@ void DEngine::ManageAllTickFunctions()
 
 	DEngine::RenderThread->SyncThreads();
 
-	if (Server)
+	if (DNetworkManager::IsDedicatedServer())
 	{
 		DThread::Sleep(10);
 	}
-	else
+	else if (DWindow::GetAllWindows().Size() == 0)
 	{
 		DThread::Sleep(1);
 	}

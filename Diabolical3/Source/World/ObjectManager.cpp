@@ -9,11 +9,18 @@
 
 void DObjectManager::RegisterObject(DSharedPtr<class DObject>& Object)
 {
-	ManagedObjects.Add(Object);
-
-	if (Object->IsNetworked() && DNetworkManager::GetServer())
+	if (bIsTicking)
 	{
-		NetRegisterObject(Object); 
+		DeferredRegister.Add(Object);
+	}
+	else
+	{
+		ManagedObjects.Add(Object);
+
+		if (Object->IsNetworked() && DNetworkManager::GetServer())
+		{
+			NetRegisterObject(Object);
+		}
 	}
 }
 

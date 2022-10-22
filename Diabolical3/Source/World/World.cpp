@@ -22,7 +22,7 @@ void DWorld::RegisterSyncVars(DVector<DSyncVarBase*>& SyncVars)
 
 void DWorld::PostConstruct()
 {
-	
+
 }
 
 void DWorld::OnReceiveSyncVarUpdate()
@@ -31,17 +31,6 @@ void DWorld::OnReceiveSyncVarUpdate()
 
 	LOG(DString::Format("Sync var. size of scene objects = %llu", SceneObjects.Size()));
 
-	for (int Index = 0; Index < SceneObjects.Size(); Index++)
-	{
-		if (SceneObjects[Index].IsValid())
-		{
-			LOG(DString::Format("valid %s", *SceneObjects[Index]->GetDisplayName()));
-		}
-		else
-		{
-			LOG("not valid");
-		}
-	}
 }
 
 void DWorld::AddSceneObject(DObjectPtr<DSceneObject> SceneObject)

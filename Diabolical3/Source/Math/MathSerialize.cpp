@@ -10,7 +10,7 @@ bool DBitSerializer<STransformf>::HasSerializeOverride()
 template<>
 bool DBitSerializer<STransformf>::SerializeOverride(DBitStream& BitStream)
 {
-	SerializeTuple( std::tuple<SVector3f, SQuaternionf, SVector3f>( Value->Position, Value->Rotation, Value->Scale ), BitStream);
+	SerializeTuple( std::tuple<SVector3f, SQuaternionf, SVector3f>( Value->GetPosition(), Value->GetRotation(), Value->GetScale()), BitStream);
 	return true;
 }
 
@@ -19,9 +19,9 @@ bool DBitSerializer<STransformf>::DeserializeOverride(DBitStream& BitStream)
 {
 	std::tuple<SVector3f, SQuaternionf, SVector3f> Tuple;
 	DeserializeTuple(Tuple, BitStream);
-	Value->Position = std::get<0>(Tuple);
-	Value->Rotation = std::get<1>(Tuple);
-	Value->Scale = std::get<2>(Tuple);
+	Value->SetPosition(std::get<0>(Tuple));
+	Value->SetRotation(std::get<1>(Tuple));
+	Value->SetScale(std::get<2>(Tuple));
 	return true;
 }
 

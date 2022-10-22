@@ -13,7 +13,7 @@ DRegisteredObjectBase* DCameraComponent::GetRegisteredObject() const
 
 DCameraComponent::DCameraComponent()
 {
-	bIsNetworked = true;
+	bIsNetworked = false;
 }
 
 void DCameraComponent::RegisterSyncVars(DVector<DSyncVarBase*>& SyncVars)
@@ -68,6 +68,8 @@ void DCameraComponent::PostConstruct()
 			continue;
 		}
 		Window->AddCamera(GetWeakThis());
+		TargetWindow = Window;
+		break;
 	}
 }
 
@@ -86,21 +88,32 @@ SMatrix44f DCameraComponent::GetViewMatrix()
 
 	STransformf ThisTransform = ParentObject.Get()->GetTransform();
 
-	SVector3f EulerRotation = { 0, 0, 0 };
-	//FPS camera:  RotationX(pitch) * RotationY(yaw)
-	glm::quat qPitch = glm::angleAxis(EulerRotation.x, glm::vec3(1, 0, 0));
-	glm::quat qYaw = glm::angleAxis(EulerRotation.y, glm::vec3(0, 1, 0));
-	glm::quat qRoll = glm::angleAxis(EulerRotation.z, glm::vec3(0, 0, 1));
+	if (ThisTransform != CachedParentTransform)
+	{
+		DirtyAllCacheVars();
+		CachedParentTransform = ThisTransform;
+	}
 
-	//For a FPS camera we can omit roll
-	glm::quat orientation = qPitch * qYaw * qRoll;
-	orientation = glm::normalize(orientation);
-	glm::mat4 rotate = glm::mat4_cast(orientation);
+	if (!bViewMatrixCached)
+	{
+		SVector3f EulerRotation = { 0, 0, 0 };
+		//FPS camera:  RotationX(pitch) * RotationY(yaw)
+		glm::quat qPitch = glm::angleAxis(EulerRotation.x, glm::vec3(1, 0, 0));
+		glm::quat qYaw = glm::angleAxis(EulerRotation.y, glm::vec3(0, 1, 0));
+		glm::quat qRoll = glm::angleAxis(EulerRotation.z, glm::vec3(0, 0, 1));
 
-	glm::mat4 translate = glm::mat4(1.0f);
-	translate = glm::translate(translate, -ThisTransform.Position);
+		//For a FPS camera we can omit roll
+		glm::quat orientation = qPitch * qYaw * qRoll;
+		orientation = glm::normalize(orientation);
+		glm::mat4 rotate = glm::mat4_cast(orientation);
 
-	return rotate * translate;
+		glm::mat4 translate = glm::mat4(1.0f);
+		translate = glm::translate(translate, -ThisTransform.GetPosition());
+
+		CachedViewMatrix = rotate * translate;
+		bViewMatrixCached = true;
+	}
+	return CachedViewMatrix;
 }
 
 SMatrix44f DCameraComponent::GetPerspectiveProjectionMatrix(float AspectRatio)

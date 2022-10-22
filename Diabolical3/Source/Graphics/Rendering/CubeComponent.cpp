@@ -6,10 +6,17 @@
 #include "MaterialInstance.h"
 #include "Graphics/Rendering/RenderThread.h"
 
+
 DRegisteredObject<DCubeComponent> RegisteredObject = DRegisteredObject<DCubeComponent>();
 DRegisteredObjectBase* DCubeComponent::GetRegisteredObject() const
 {
 	return &RegisteredObject;
+}
+
+DRegisteredObject<DCubeComponentLocal> RegisteredObjectLocal = DRegisteredObject<DCubeComponentLocal>();
+DRegisteredObjectBase* DCubeComponentLocal::GetRegisteredObject() const
+{
+	return &RegisteredObjectLocal;
 }
 
 DCubeComponent::DCubeComponent()
@@ -35,26 +42,29 @@ void DCubeComponent::Render(DObjectPtr<DCameraComponent> CameraComponent)
 		return;
 	}
 
-	STransformf Transform = ParentObject.Get()->GetTransform();
-
-	DMaterial::GetDefaultMaterial();
-	DSharedPtr<DMaterialInstance> TempMaterialInstance = new DMaterialInstance(DMaterial::GetDefaultMaterial());
+	DObjectPtr<DCubeComponent> WeakThis = GetWeakThis();
 
 	SMatrix44f ViewMatrix = CameraComponent->GetViewMatrix();
 	SMatrix44f ProjectionMatrix = CameraComponent->GetPerspectiveProjectionMatrix(1.0f);
 
-	SMatrix44f ModelMatrix = Transform.GetModelMatrix();
+	SMatrix44f ModelMatrix = GetModelMatrix();
 
-	SMatrix44f MVPMatrix = ProjectionMatrix * ViewMatrix * ModelMatrix;
-;
-	DEngine::RenderThread->Invoke(DAction<int>([TempMaterialInstance, MVPMatrix](int a)
+	DEngine::RenderThread->Invoke(DAction<int>([WeakThis, ModelMatrix, ViewMatrix, ProjectionMatrix](int a)
 		{
-			if (!TempMaterialInstance.IsValid())
+			if (!WeakThis.IsValid())
 			{
+				Check(false);
 				return;
 			}
 
-			bool bUniformSuccess = TempMaterialInstance->SetUniform("MVP", MVPMatrix);
+			if (!WeakThis->MaterialInstance.IsValid())
+			{
+				Check(false);
+				return;
+			}
+
+			SMatrix44f MVPMatrix = ProjectionMatrix * ViewMatrix * ModelMatrix;
+			bool bUniformSuccess = WeakThis->MaterialInstance->SetUniform("MVP", MVPMatrix);
 			Check(bUniformSuccess);
 			if (!bUniformSuccess)
 			{
@@ -62,9 +72,16 @@ void DCubeComponent::Render(DObjectPtr<DCameraComponent> CameraComponent)
 				return;
 			}
 
-			TempMaterialInstance->Bind();
+			WeakThis->MaterialInstance->Bind();
 
 			MeshPrimitives::Cube->Draw();
 
 		}));
+	
+}
+
+void DCubeComponent::PostConstruct()
+{
+	DMaterial::GetDefaultMaterial();
+	MaterialInstance = new DMaterialInstance(DMaterial::GetDefaultMaterial());
 }

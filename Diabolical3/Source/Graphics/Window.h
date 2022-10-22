@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include "Types/DVector.h"
 #include "Types/DMemory.h"
+#include "Input/Input.h"
 
 class DWindow
 {
@@ -21,6 +22,7 @@ public:
 	DWeakPtr<DWindow> GetWeakThis();
 
 	virtual float GetAspectRatio() { return 1.0f; }
+	DInputStack InputStack;
 
 protected:
 	virtual void Tick() = 0;
@@ -32,29 +34,4 @@ protected:
 	DVector<DObjectPtr<DCameraComponent>> RegisteredCameras;
 
 	friend class DEngine;
-};
-
-class DWindowSDL : public DWindow
-{
-public:
-	static DWeakPtr<DWindow> MakeNew(DString WindowTitle, int X, int Y, int Width, int Height, uint32_t WindowFlags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);
-
-	virtual ~DWindowSDL();
-	virtual void Tick() override;
-	virtual void Close() override;
-	virtual bool IsPendingRemoval() const override
-	{
-		return bWantsToClose;
-	}
-
-	static bool UsingSDL();
-	static DWeakPtr<DWindow> GetFromSdlId(uint32_t SdlId);
-
-protected:
-	bool bWantsToClose = false;
-
-	DWindowSDL(DString WindowTitle, int X, int Y, int Width, int Height, uint32_t WindowFlags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);
-
-	SDL_Window* SdlWindow = nullptr;
-	SDL_GLContext SdlGlContext = nullptr;
 };

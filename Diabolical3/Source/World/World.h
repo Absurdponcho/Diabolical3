@@ -64,6 +64,15 @@ public:
 					OutArray.Add(DObjectPtr<T>(SceneComponent));
 				}
 			}
+
+			for (int ComponentIndex = 0; ComponentIndex < SceneObject->NonNetworkedComponents.Size(); ComponentIndex++)
+			{
+				DObjectPtr<DSceneComponent>& SceneComponent = SceneObject->NonNetworkedComponents[ComponentIndex];
+				if (dynamic_cast<T*>(SceneComponent.Get()))
+				{
+					OutArray.Add(DObjectPtr<T>(SceneComponent));
+				}
+			}
 		}
 		return OutArray;
 	}

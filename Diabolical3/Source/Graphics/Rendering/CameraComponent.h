@@ -1,6 +1,7 @@
 #pragma once
 #include "World/SceneComponent.h"
 #include "Math/Math.h"
+#include "Input/Input.h"
 
 class DCameraComponent : public DSceneComponent
 {
@@ -20,5 +21,21 @@ public:
 
 	SMatrix44f GetViewMatrix();
 	SMatrix44f GetPerspectiveProjectionMatrix(float AspectRatio);
+
+	DWeakPtr<class DWindow> GetTargetWindow() const
+	{
+		return TargetWindow;
+	}
+protected:
+	DWeakPtr<class DWindow> TargetWindow;
+	bool bViewMatrixCached = false;
+	SMatrix44f CachedViewMatrix;
+	STransformf CachedParentTransform;
+
+
+	void DirtyAllCacheVars()
+	{
+		bViewMatrixCached = false;
+	}
 
 };
