@@ -215,6 +215,7 @@
     <ClInclude Include="Source\Graphics\Rendering\Mesh.h" />
     <ClInclude Include="Source\Graphics\Rendering\MeshPrimitives.h" />
     <ClInclude Include="Source\Graphics\Rendering\RenderComponent.h" />
+    <ClInclude Include="Source\Graphics\Rendering\RenderTarget.h" />
     <ClInclude Include="Source\Graphics\Rendering\RenderThread.h" />
     <ClInclude Include="Source\Graphics\Window.h" />
     <ClInclude Include="Source\Graphics\WindowSDL.h" />

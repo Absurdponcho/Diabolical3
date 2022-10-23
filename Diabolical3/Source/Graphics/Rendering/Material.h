@@ -14,10 +14,13 @@ public:
 	~DMaterial();
 
 	static DSharedPtr<DMaterial> GetDefaultMaterial();
+	static DSharedPtr<DMaterial> GetQuadCopyMaterial();
 
 protected:
 	static void InitializeDefaultMaterial();
+	static void InitializeQuadCopyMaterial();
 	static DSharedPtr<DMaterial> DefaultMaterial;
+	static DSharedPtr<DMaterial> QuadCopyMaterial;
 	void BuildVertexShader(const DString& Vertex);
 	void BuildFragmentShader(const DString& Fragment);
 	void BuildProgram();

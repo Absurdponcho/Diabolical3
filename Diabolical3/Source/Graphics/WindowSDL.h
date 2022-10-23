@@ -16,6 +16,7 @@ public:
 
 	static bool UsingSDL();
 	static DWeakPtr<DWindow> GetFromSdlId(uint32_t SdlId);
+	virtual bool GetWidthHeight(uint32_t& OutWidth, uint32_t& OutHeight) const override;
 
 	virtual void SetMouseCaptureMode(EMouseCaptureMode InMouseCaptureMode) override;
 	virtual EMouseCaptureMode GetMouseCaptureMode() const override;

@@ -14,3 +14,10 @@ DSharedPtr<DMesh> MeshPrimitives::Triangle = std::make_shared<DMesh>(
 	DVector<int>({0, 1, 2}),
 	DVector<SVector2f>()
 	);
+
+DSharedPtr<DMesh> MeshPrimitives::Quad = std::make_shared<DMesh>(
+	DVector<SVector3f>({ {-1, 1, 0}, {1, 1, 0}, {1, -1, 0}, {-1, -1, 0} }),
+	DVector<SVector3f>(),
+	DVector<int>({ 0, 1, 2, 0, 2, 3 }),
+	DVector<SVector2f>({ { 0, 1 }, { 1, 1 }, { 1, 0 }, { 0, 0 } })
+	);

@@ -46,12 +46,23 @@ void DCameraComponent::RenderScene(DWeakPtr<DWindow> WindowWeak)
 
 	float AspectRatio = Window->GetAspectRatio();
 
+	uint32_t WindowWidth, WindowHeight;
+	Window->GetWidthHeight(WindowWidth, WindowHeight);
+
+	if (!RenderTarget.IsValid() || WindowWidth != RenderTarget->GetWidth() || WindowHeight != RenderTarget->GetHeight())
+	{
+		RenderTarget = std::make_shared<DRenderTarget>(WindowWidth, WindowHeight);
+	}
+
+	RenderTarget->Bind();
+
 	DVector<DObjectPtr<DRenderComponent>> RenderComponents = GetParent()->GetOwnerWorld()->GetAllComponentsOfType<DRenderComponent>();
-	//LOG(DString::Format("Comp size %i", RenderComponents.Size()));
 	for (DObjectPtr<DRenderComponent>& RenderComponent : RenderComponents)
 	{
 		RenderComponent->Render(GetWeakThis());
 	}
+
+	RenderTarget->DrawToScreen();
 }
 
 void DCameraComponent::PostConstruct()

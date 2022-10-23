@@ -2,6 +2,8 @@
 #include "World/SceneComponent.h"
 #include "DMath/Math.h"
 #include "Input/Input.h"
+#include "RenderTarget.h"
+#include "Types/DMemory.h"
 
 class DCameraComponent : public DSceneComponent
 {
@@ -31,7 +33,7 @@ protected:
 	bool bViewMatrixCached = false;
 	SMatrix44f CachedViewMatrix;
 	STransformf CachedParentTransform;
-
+	DSharedPtr<DRenderTarget> RenderTarget;
 
 	void DirtyAllCacheVars()
 	{

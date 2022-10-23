@@ -7,4 +7,5 @@ namespace MeshPrimitives
 {
 	extern DSharedPtr<DMesh> Cube;
 	extern DSharedPtr<DMesh> Triangle;
+	extern DSharedPtr<DMesh> Quad;
 }

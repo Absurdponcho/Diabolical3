@@ -28,6 +28,7 @@ public:
 	DWeakPtr<DWindow> GetWeakThis();
 
 	virtual float GetAspectRatio() { return 1.0f; }
+	virtual bool GetWidthHeight(uint32_t& OutWidth, uint32_t& OutHeight) const = 0;
 	DInputStack InputStack;
 
 	virtual void SetMouseCaptureMode(EMouseCaptureMode MouseCaptureMode) = 0;

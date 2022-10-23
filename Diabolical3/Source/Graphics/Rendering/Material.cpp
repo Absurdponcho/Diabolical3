@@ -6,6 +6,7 @@
 #include "DiabolicalEngine.h"
 
 DSharedPtr<DMaterial> DMaterial::DefaultMaterial = nullptr;
+DSharedPtr<DMaterial> DMaterial::QuadCopyMaterial = nullptr;
 
 DSharedPtr<DMaterial> DMaterial::GetDefaultMaterial()
 {
@@ -28,6 +29,29 @@ void DMaterial::InitializeDefaultMaterial()
 
 	DefaultMaterial = std::make_shared<DMaterial>();
 	DefaultMaterial->BuildShader(VertexShader, FragmentShader);
+}
+
+DSharedPtr<DMaterial> DMaterial::GetQuadCopyMaterial()
+{
+	static bool bInitializedQuadCopyMaterial = false;
+	if (!bInitializedQuadCopyMaterial)
+	{
+		InitializeQuadCopyMaterial();
+		bInitializedQuadCopyMaterial = true;
+	}
+	return QuadCopyMaterial;
+}
+
+void DMaterial::InitializeQuadCopyMaterial()
+{
+	DString VertexShader = DAssetManager::Get().SynchronousLoadAsset("Assets/Shaders/QuadCopy.vert")->AsString();
+	DString FragmentShader = DAssetManager::Get().SynchronousLoadAsset("Assets/Shaders/QuadCopy.frag")->AsString();
+
+	Check(VertexShader.Length() > 0);
+	Check(FragmentShader.Length() > 0);
+
+	QuadCopyMaterial = std::make_shared<DMaterial>();
+	QuadCopyMaterial->BuildShader(VertexShader, FragmentShader);
 }
 
 void DMaterial::BuildShader(const DString& Vertex, const DString& Fragment)

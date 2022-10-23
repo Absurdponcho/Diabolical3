@@ -56,6 +56,22 @@ DWeakPtr<DWindow> DWindowSDL::GetFromSdlId(uint32_t SdlId)
 	return DWeakPtr<DWindow>();
 }
 
+bool DWindowSDL::GetWidthHeight(uint32_t& OutWidth, uint32_t& OutHeight) const
+{
+	if (!SdlWindow)
+	{
+		return false;
+	}
+
+	int W, H;
+	SDL_GetWindowSize(SdlWindow, &W, &H);
+
+	OutWidth = W;
+	OutHeight = H;
+
+	return true;
+}
+
 DWeakPtr<DWindow> DWindowSDL::MakeNew(DString WindowTitle, int X, int Y, int Width, int Height, uint32_t WindowFlags)
 {
 	DSharedPtr<DWindow> WindowSDL = new DWindowSDL(WindowTitle, X, Y, Width, Height, WindowFlags);
@@ -95,6 +111,8 @@ DWindowSDL::DWindowSDL(DString WindowTitle, int X, int Y, int Width, int Height,
 
 	DEngine::RenderThread->InvokeImmediately(DAction<int>([=](int a)
 		{
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3); 
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3); 
 			SdlGlContext = SDL_GL_CreateContext(SdlWindow);
 			Check(SdlGlContext);
 			if (!SdlGlContext)

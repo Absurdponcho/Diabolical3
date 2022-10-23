@@ -53,6 +53,8 @@ inline void DMaterialUniformValue<SVector2i>::ApplyInternal() { glUniform2i(Unif
 template <>
 inline void DMaterialUniformValue<int>::ApplyInternal() { glUniform1i(UniformLocation, Value); }
 template <>
+inline void DMaterialUniformValue<GLuint>::ApplyInternal() { glUniform1i(UniformLocation, Value); }
+template <>
 inline void DMaterialUniformValue<float>::ApplyInternal() { glUniform1f(UniformLocation, Value); }
 template <>
 inline void DMaterialUniformValue<SMatrix44f>::ApplyInternal() 
