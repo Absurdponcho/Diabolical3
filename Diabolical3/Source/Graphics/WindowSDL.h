@@ -17,7 +17,11 @@ public:
 	static bool UsingSDL();
 	static DWeakPtr<DWindow> GetFromSdlId(uint32_t SdlId);
 
+	virtual void SetMouseCaptureMode(EMouseCaptureMode InMouseCaptureMode) override;
+	virtual EMouseCaptureMode GetMouseCaptureMode() const override;
+
 protected:
+	EMouseCaptureMode MouseCaptureMode = EMouseCaptureMode::MCM_None;
 	bool bWantsToClose = false;
 
 	DWindowSDL(DString WindowTitle, int X, int Y, int Width, int Height, uint32_t WindowFlags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI);

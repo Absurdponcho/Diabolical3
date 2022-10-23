@@ -158,3 +158,36 @@ void DWindowSDL::HandleSDLAxisEvent(SDL_Event& Event)
 	SAxisEvent AxisEvent = DInputStack::AxisEventFromSDLEvent(Event);
 	InputStack.BroadcastAxisEvent(AxisEvent);
 }
+
+void DWindowSDL::SetMouseCaptureMode(EMouseCaptureMode InMouseCaptureMode)
+{
+	if (MouseCaptureMode == EMouseCaptureMode::MCM_None)
+	{
+		if (InMouseCaptureMode == EMouseCaptureMode::MCM_None)
+		{
+			return;
+		}
+		else if (InMouseCaptureMode == EMouseCaptureMode::MCM_CapturedHidden)
+		{
+			SDL_SetRelativeMouseMode(SDL_TRUE);
+		}
+	}
+	else if (MouseCaptureMode == EMouseCaptureMode::MCM_CapturedHidden)
+	{
+		if (InMouseCaptureMode == EMouseCaptureMode::MCM_CapturedHidden)
+		{
+			return;
+		}
+		else if (InMouseCaptureMode == EMouseCaptureMode::MCM_None)
+		{
+			SDL_SetRelativeMouseMode(SDL_FALSE);
+		}
+	}
+
+	MouseCaptureMode = InMouseCaptureMode;
+}
+
+EMouseCaptureMode DWindowSDL::GetMouseCaptureMode() const
+{
+	return MouseCaptureMode;
+}

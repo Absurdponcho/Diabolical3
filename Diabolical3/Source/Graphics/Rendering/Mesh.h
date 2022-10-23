@@ -1,6 +1,6 @@
 #pragma once
 #include "Types/DVector.h"
-#include "Math/Math.h"
+#include "DMath/Math.h"
 #include "gl/glew.h"
 #include <gl/GL.h>
 

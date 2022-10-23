@@ -1,6 +1,6 @@
 #pragma once
 #include "World/SceneComponent.h"
-#include "Math/Math.h"
+#include "DMath/Math.h"
 
 class DRenderComponent : public DSceneComponent
 {

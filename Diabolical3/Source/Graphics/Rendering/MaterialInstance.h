@@ -2,7 +2,7 @@
 #include "Material.h"
 #include "Types/DVector.h"
 #include "Types/DString.h"
-#include "Math/Math.h"
+#include "DMath/Math.h"
 #include "Logging/Logging.h"
 
 class DMaterialUniformValueBase 
@@ -41,15 +41,15 @@ public:
 };
 
 template <>
-inline void DMaterialUniformValue<SVector4f>::ApplyInternal() { glUniform4f(UniformLocation, Value.x, Value.y, Value.z, Value.w); }
+inline void DMaterialUniformValue<SVector4f>::ApplyInternal() { glUniform4f(UniformLocation, Value.X, Value.Y, Value.Z, Value.W); }
 template <>
-inline void DMaterialUniformValue<SVector3f>::ApplyInternal() { glUniform3f(UniformLocation, Value.x, Value.y, Value.z); }
+inline void DMaterialUniformValue<SVector3f>::ApplyInternal() { glUniform3f(UniformLocation, Value.X, Value.Y, Value.Z); }
 template <>
-inline void DMaterialUniformValue<SVector2f>::ApplyInternal() { glUniform2f(UniformLocation, Value.x, Value.y); }
+inline void DMaterialUniformValue<SVector2f>::ApplyInternal() { glUniform2f(UniformLocation, Value.X, Value.Y); }
 template <>
-inline void DMaterialUniformValue<SVector3i>::ApplyInternal() { glUniform3i(UniformLocation, Value.x, Value.y, Value.z); }
+inline void DMaterialUniformValue<SVector3i>::ApplyInternal() { glUniform3i(UniformLocation, (GLint)Value.X, (GLint)Value.Y, (GLint)Value.Z); }
 template <>
-inline void DMaterialUniformValue<SVector2i>::ApplyInternal() { glUniform2i(UniformLocation, Value.x, Value.y); }
+inline void DMaterialUniformValue<SVector2i>::ApplyInternal() { glUniform2i(UniformLocation, (GLint)Value.X, (GLint)Value.Y); }
 template <>
 inline void DMaterialUniformValue<int>::ApplyInternal() { glUniform1i(UniformLocation, Value); }
 template <>
@@ -57,7 +57,7 @@ inline void DMaterialUniformValue<float>::ApplyInternal() { glUniform1f(UniformL
 template <>
 inline void DMaterialUniformValue<SMatrix44f>::ApplyInternal() 
 {	
-	glUniformMatrix4fv(UniformLocation, 1, GL_FALSE, glm::value_ptr((glm::mat4x4)Value)); 
+	glUniformMatrix4fv(UniformLocation, 1, GL_FALSE, (const GLfloat*) & Value);
 }
 
 class DMaterialInstance

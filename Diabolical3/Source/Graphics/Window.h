@@ -5,6 +5,12 @@
 #include "Types/DMemory.h"
 #include "Input/Input.h"
 
+enum class EMouseCaptureMode : uint8_t
+{
+	MCM_None,
+	MCM_CapturedHidden,
+};
+
 class DWindow
 {
 public:
@@ -23,6 +29,9 @@ public:
 
 	virtual float GetAspectRatio() { return 1.0f; }
 	DInputStack InputStack;
+
+	virtual void SetMouseCaptureMode(EMouseCaptureMode MouseCaptureMode) = 0;
+	virtual EMouseCaptureMode GetMouseCaptureMode() const = 0;
 
 protected:
 	virtual void Tick() = 0;

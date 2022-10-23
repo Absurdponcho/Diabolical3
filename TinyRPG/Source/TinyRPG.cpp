@@ -16,6 +16,7 @@
 #include "Graphics/Rendering/CameraComponent.h"
 #include "Graphics/Rendering/MeshComponent.h"
 #include "Game/TinyRPGGameMode.h"
+#include "Graphics/Window.h"
 
 int main(int argc, char* argv[])
 {
@@ -29,6 +30,7 @@ int main(int argc, char* argv[])
 	if (!DNetworkManager::IsDedicatedServer())
 	{
 		GameWindow = DWindowSDL::MakeNew("TinyRPG", 200, 200, 800, 600);
+		GameWindow->SetMouseCaptureMode(EMouseCaptureMode::MCM_CapturedHidden);
 	}
 
 	if (DNetworkManager::GetServer())
@@ -93,7 +95,7 @@ int main(int argc, char* argv[])
 		for (DObjectPtr<DSceneObject>& Object : MeshObjects)
 		{
 			STransformf Transform = Object->GetTransform();
-			Transform.Position.y = sin(Index);
+			Transform.Position.Y = sin(Index);
 			//Object->SetTransform(Transform);
 		}
 		Index += 0.05f;

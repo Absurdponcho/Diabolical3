@@ -4,6 +4,7 @@
 #include "Graphics/Rendering/MeshComponent.h"
 #include "Graphics/Window.h"
 #include "Time/Time.h"
+#include "DMath/Math.h"
 
 DRegisteredObject<DTinyRPGPlayer> RegisteredObject = DRegisteredObject<DTinyRPGPlayer>();
 DRegisteredObjectBase* DTinyRPGPlayer::GetRegisteredObject() const
@@ -22,32 +23,36 @@ void DTinyRPGPlayer::Tick(const STickInfo& TickInfo)
 
 	if (InputVector != SVector3f::ZeroVector)
 	{
+		STransformf Transform = GetTransform();
 		if (IsRemoteClient())
 		{
 			SVector3f NormalizedInputVector = InputVector.Normalized();
-			NormalizedInputVector.x = NormalizedInputVector.x * TickInfo.DeltaTime * 10.0f;
-			NormalizedInputVector.y = NormalizedInputVector.y * TickInfo.DeltaTime * 10.0f;
-			NormalizedInputVector.z = NormalizedInputVector.z * TickInfo.DeltaTime * 10.0f;
+			//NormalizedInputVector = Transform.RotateVector(NormalizedInputVector);
+			NormalizedInputVector.X = NormalizedInputVector.X * TickInfo.DeltaTime * 10.0f;
+			NormalizedInputVector.Y = NormalizedInputVector.Y * TickInfo.DeltaTime * 10.0f;
+			NormalizedInputVector.Z = NormalizedInputVector.Z * TickInfo.DeltaTime * 10.0f;
 			ServerRequestMove.Send(NormalizedInputVector);
 		}
 		else
 		{
 			SVector3f NormalizedInputVector = InputVector.Normalized();
-			STransformf Transform = GetTransform();
-			Transform.Position.x += NormalizedInputVector.x * TickInfo.DeltaTime * 10.0f;
-			Transform.Position.y += NormalizedInputVector.y * TickInfo.DeltaTime * 10.0f;
-			Transform.Position.z += NormalizedInputVector.z * TickInfo.DeltaTime * 10.0f;
+			//NormalizedInputVector = Transform.RotateVector(NormalizedInputVector);
+			Transform.Position.X += NormalizedInputVector.X * TickInfo.DeltaTime * 10.0f;
+			Transform.Position.Y += NormalizedInputVector.Y * TickInfo.DeltaTime * 10.0f;
+			Transform.Position.Z += NormalizedInputVector.Z * TickInfo.DeltaTime * 10.0f;
 			SetTransform(Transform);
 		}
+		
+
 	}
 }
 
 void DTinyRPGPlayer::ServerRequestMove_Receive(SVector3f Move)
 {
 	STransformf Transform = GetTransform();
-	Transform.Position.x += Move.x;
-	Transform.Position.y += Move.y;
-	Transform.Position.z += Move.z;
+	Transform.Position.X += Move.X;
+	Transform.Position.Y += Move.Y;
+	Transform.Position.Z += Move.Z;
 	SetTransform(Transform);
 }
 
@@ -103,7 +108,7 @@ SInputHandleResult DTinyRPGPlayer::KeyListener(const SKeyEvent& KeyEvent)
 	case EKeyCode::KC_W:
 	case EKeyCode::KC_Up:
 	{
-		InputVector.z += KeyEvent.bReleased ? 1 : -1;
+		InputVector.Z += KeyEvent.bReleased ? 1 : -1;
 
 		SInputHandleResult HandleResult;
 		HandleResult.bConsumeInput = true;
@@ -112,7 +117,7 @@ SInputHandleResult DTinyRPGPlayer::KeyListener(const SKeyEvent& KeyEvent)
 	case EKeyCode::KC_S:
 	case EKeyCode::KC_Down:
 	{
-		InputVector.z += KeyEvent.bReleased ? -1 : 1;
+		InputVector.Z += KeyEvent.bReleased ? -1 : 1;
 
 		SInputHandleResult HandleResult;
 		HandleResult.bConsumeInput = true;
@@ -121,7 +126,7 @@ SInputHandleResult DTinyRPGPlayer::KeyListener(const SKeyEvent& KeyEvent)
 	case EKeyCode::KC_A:
 	case EKeyCode::KC_Left:
 	{
-		InputVector.x += KeyEvent.bReleased ? 1 : -1;
+		InputVector.X += KeyEvent.bReleased ? 1 : -1;
 
 		SInputHandleResult HandleResult;
 		HandleResult.bConsumeInput = true;
@@ -130,7 +135,7 @@ SInputHandleResult DTinyRPGPlayer::KeyListener(const SKeyEvent& KeyEvent)
 	case EKeyCode::KC_D:
 	case EKeyCode::KC_Right:
 	{
-		InputVector.x += KeyEvent.bReleased ? -1 : 1;
+		InputVector.X += KeyEvent.bReleased ? -1 : 1;
 
 		SInputHandleResult HandleResult;
 		HandleResult.bConsumeInput = true;
@@ -138,7 +143,7 @@ SInputHandleResult DTinyRPGPlayer::KeyListener(const SKeyEvent& KeyEvent)
 	}
 	case EKeyCode::KC_Space:
 	{
-		InputVector.y += KeyEvent.bReleased ? -1 : 1;
+		InputVector.Y += KeyEvent.bReleased ? -1 : 1;
 
 		SInputHandleResult HandleResult;
 		HandleResult.bConsumeInput = true;
@@ -146,7 +151,7 @@ SInputHandleResult DTinyRPGPlayer::KeyListener(const SKeyEvent& KeyEvent)
 	}
 	case EKeyCode::KC_LeftCtrl:
 	{
-		InputVector.y += KeyEvent.bReleased ? 1 : -1;
+		InputVector.Y += KeyEvent.bReleased ? 1 : -1;
 
 		SInputHandleResult HandleResult;
 		HandleResult.bConsumeInput = true;
@@ -165,8 +170,8 @@ SInputHandleResult DTinyRPGPlayer::AxisListener(const SAxisEvent& AxisEvent)
 	case EAxisCode::AC_Mouse:
 		STransformf Transform = GetTransform();
 		SEulerRotationf EulerRotation = Transform.GetEulerRotation();
-		EulerRotation.y += AxisEvent.MotionX * 0.15f;
-		EulerRotation.x += AxisEvent.MotionY * 0.15f;
+		EulerRotation.Yaw += AxisEvent.MotionX * 0.15f;
+		EulerRotation.Pitch += AxisEvent.MotionY * 0.15f;
 		Transform.SetEulerRotation(EulerRotation);
 		SetTransform(Transform);
 		break;

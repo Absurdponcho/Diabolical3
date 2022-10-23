@@ -2,7 +2,7 @@
 #include "Object.h"
 #include "Types/DMemory.h"
 #include "Online/SyncVar.h"
-#include "Math/Math.h"
+#include "DMath/Math.h"
 
 // An object than can exist within a DWorld
 class DSceneObject : public DObject
@@ -67,7 +67,7 @@ public:
 protected:
 	DSyncVar<SVector3f> Position;
 	DSyncVar<SVector3f> Scale = SVector3f::OneVector;
-	DSyncVar<SQuaternionf> Rotation;
+	DSyncVar<SQuaternionf> Rotation = SQuaternionf::Identity;
 
 	DSyncVar<DObjectPtr<class DWorld>> OwnerWorld;
 	DSyncVector<DObjectPtr<class DSceneComponent>> Components;

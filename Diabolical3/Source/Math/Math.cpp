@@ -23,7 +23,7 @@ const SEulerRotationf SEulerRotationf::Identity = { 0, 0, 0 };
 
 void SEulerRotationf::ToQuat(SQuaternionf& OutQuat) const
 {
-	const float DegToRad = 3.14159f / 180.f;
+	const float DegToRad = 0.0174533f;
 	const float HalfDegToRad = DegToRad / 2.f;
 	float SP, SY, SR;
 	float CP, CY, CR;

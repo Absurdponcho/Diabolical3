@@ -160,6 +160,9 @@
     <ClCompile Include="Source\Check.cpp" />
     <ClCompile Include="Source\CommandLine\CmdLine.cpp" />
     <ClCompile Include="Source\DiabolicalEngine.cpp" />
+    <ClCompile Include="Source\DMath\Matrix\MatrixConsts.cpp" />
+    <ClCompile Include="Source\DMath\Quaternion\QuaternionConsts.cpp" />
+    <ClCompile Include="Source\DMath\Vector\VectorConsts.cpp" />
     <ClCompile Include="Source\FileSystem\Filesystem.cpp" />
     <ClCompile Include="Source\Game\GameMode.cpp" />
     <ClCompile Include="Source\Graphics\Rendering\CubeComponent.cpp" />
@@ -174,8 +177,6 @@
     <ClCompile Include="Source\Graphics\WindowSDL.cpp" />
     <ClCompile Include="Source\Input\Input.cpp" />
     <ClCompile Include="Source\Logging\Logging.cpp" />
-    <ClCompile Include="Source\Math\Math.cpp" />
-    <ClCompile Include="Source\Math\MathSerialize.cpp" />
     <ClCompile Include="Source\Online\Client.cpp" />
     <ClCompile Include="Source\Online\NetworkManager.cpp" />
     <ClCompile Include="Source\Online\Server.cpp" />
@@ -201,6 +202,9 @@
     <ClInclude Include="Source\Check.h" />
     <ClInclude Include="Source\CommandLine\CmdLine.h" />
     <ClInclude Include="Source\DiabolicalEngine.h" />
+    <ClInclude Include="Source\DMath\EulerRotation\EulerRotation.inl" />
+    <ClInclude Include="Source\DMath\Math.h" />
+    <ClInclude Include="Source\DMath\Vector\Vector.inl" />
     <ClInclude Include="Source\FileSystem\Filesystem.h" />
     <ClInclude Include="Source\Game\GameMode.h" />
     <ClInclude Include="Source\Graphics\Rendering\MeshComponent.h" />
@@ -215,9 +219,6 @@
     <ClInclude Include="Source\Graphics\WindowSDL.h" />
     <ClInclude Include="Source\Input\Input.h" />
     <ClInclude Include="Source\Logging\Logging.h" />
-    <ClInclude Include="Source\Math\GLM\MathGLM.h" />
-    <ClInclude Include="Source\Math\Math.h" />
-    <ClInclude Include="Source\Math\MathSerialize.inl" />
     <ClInclude Include="Source\Online\Client.h" />
     <ClInclude Include="Source\Online\NetTypes.h" />
     <ClInclude Include="Source\Online\NetworkManager.h" />
@@ -247,6 +248,9 @@
     <ClInclude Include="Source\World\World.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Source\DMath\Matrix\Matrix.inl" />
+    <None Include="Source\DMath\Quaternion\Quaternion.inl" />
+    <None Include="Source\DMath\Transform\Transform.inl" />
     <None Include="Source\Input\KeyCodes.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

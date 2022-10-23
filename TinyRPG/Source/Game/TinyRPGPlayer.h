@@ -2,7 +2,7 @@
 #include "Game/Player.h"
 #include "Input/Input.h"
 #include "Online/RPC.h"
-#include "Math/Math.h"
+#include "DMath/Math.h"
 
 class DTinyRPGPlayer : public DPlayer
 {

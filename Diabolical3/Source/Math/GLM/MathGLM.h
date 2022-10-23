@@ -267,6 +267,15 @@ public:
 		SetRotation(Quat);
 	}
 
+	SVector3f RotateVector(SVector3f InVector)
+	{
+		glm::vec3 v = InVector;
+		glm::quat q = Rotation;
+		glm::mat4 m = glm::mat4(q);
+		glm::vec4 v4 = m * glm::vec4(v, 1.0f);
+		return glm::vec3(v4.x, v4.y, v4.z);
+	}
+
 	bool Equals(const STransformf& Other) const
 	{
 		return Other.Position == Position && Other.Scale == Scale && Other.Rotation == Rotation;

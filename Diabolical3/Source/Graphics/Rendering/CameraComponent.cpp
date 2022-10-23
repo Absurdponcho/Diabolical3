@@ -98,16 +98,16 @@ SMatrix44f DCameraComponent::GetViewMatrix()
 	{
 		SEulerRotationf EulerRotation = ThisTransform.GetEulerRotation() * 0.0174533f;
 		//FPS camera:  RotationX(pitch) * RotationY(yaw)
-		glm::quat qPitch = glm::angleAxis(EulerRotation.x, glm::vec3(1, 0, 0));
-		glm::quat qYaw = glm::angleAxis(EulerRotation.y, glm::vec3(0, 1, 0));
-		glm::quat qRoll = glm::angleAxis(EulerRotation.z, glm::vec3(0, 0, 1));
+		SQuaternionf qPitch = SQuaternionf::FromAngleAxis(EulerRotation.Pitch, SVector3f(1, 0, 0));
+		SQuaternionf qYaw = SQuaternionf::FromAngleAxis(EulerRotation.Yaw, SVector3f(0, 1, 0));
+		SQuaternionf qRoll = SQuaternionf::FromAngleAxis(EulerRotation.Roll, SVector3f(0, 0, 1));
 
-		glm::quat orientation = qPitch * qYaw * qRoll;
-		orientation = glm::normalize(orientation);
-		glm::mat4 rotate = glm::mat4_cast(orientation);
+		SQuaternionf orientation = qPitch * qYaw * qRoll;
+		orientation = orientation.Normalized();
+		SMatrix44f rotate = orientation.ToMatrix();
 
-		glm::mat4 translate = glm::mat4(1.0f);
-		translate = glm::translate(translate, -ThisTransform.GetPosition());
+		SMatrix44f translate = SMatrix44f::Identity;
+		translate = SMatrix44f::Translate(translate, -ThisTransform.GetPosition());
 
 		CachedViewMatrix = rotate * translate;
 		bViewMatrixCached = true;
@@ -117,5 +117,6 @@ SMatrix44f DCameraComponent::GetViewMatrix()
 
 SMatrix44f DCameraComponent::GetPerspectiveProjectionMatrix(float AspectRatio)
 {
-	return glm::perspective(glm::radians(90.f), AspectRatio, 0.001f, 1000.f);
+	float DegToRad = 0.0174533f;
+	return SMatrix44f::Perspective(90.0f * DegToRad, AspectRatio, 0.001f, 1000.f);
 }
