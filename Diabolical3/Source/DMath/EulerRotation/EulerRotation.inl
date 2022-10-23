@@ -14,27 +14,29 @@ public:
 
 	MQuaternion<T> ToQuat() const
 	{
+		// From
+		// https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+		// Yaw Roll & Pitch needed to be moved around.
+
 		MQuaternion<T> OutQuat;
 		const float DegToRad = 0.0174533f;
 		const float HalfDegToRad = DegToRad / 2.f;
-		float SP, SY, SR;
-		float CP, CY, CR;
 
-		const float PitchNoWinding = fmod(Pitch, 360.0f);
-		const float YawNoWinding = fmod(Yaw, 360.0f);
-		const float RollNoWinding = fmod(Roll, 360.0f);
+		const float PitchNoWinding = fmod(Yaw, 360.0f);
+		const float YawNoWinding = fmod(Roll , 360.0f);
+		const float RollNoWinding = fmod(Pitch, 360.0f);
 
-		SP = sin(PitchNoWinding * HalfDegToRad);
-		CP = cos(PitchNoWinding * HalfDegToRad);
-		SY = sin(YawNoWinding * HalfDegToRad);
-		CY = cos(YawNoWinding * HalfDegToRad);
-		SR = sin(RollNoWinding * HalfDegToRad);
-		CR = cos(RollNoWinding * HalfDegToRad);
+		T SP = sin(PitchNoWinding * HalfDegToRad);
+		T CP = cos(PitchNoWinding * HalfDegToRad);
+		T SY = sin(YawNoWinding * HalfDegToRad);
+		T CY = cos(YawNoWinding * HalfDegToRad);
+		T SR = sin(RollNoWinding * HalfDegToRad);
+		T CR = cos(RollNoWinding * HalfDegToRad);
 
-		OutQuat.X = CR * SP * SY - SR * CP * CY;
-		OutQuat.Y = -CR * SP * CY - SR * CP * SY;
-		OutQuat.Z = CR * CP * SY - SR * SP * CY;
 		OutQuat.W = CR * CP * CY + SR * SP * SY;
+		OutQuat.X = SR * CP * CY - CR * SP * SY;
+		OutQuat.Y = CR * SP * CY + SR * CP * SY;
+		OutQuat.Z = CR * CP * SY - SR * SP * CY;
 		return OutQuat;
 	}
 

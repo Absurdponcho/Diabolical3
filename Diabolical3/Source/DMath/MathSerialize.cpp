@@ -35,7 +35,7 @@ bool DBitSerializer<SVector3f>::HasSerializeOverride()
 template<>
 bool DBitSerializer<SVector3f>::SerializeOverride(DBitStream& BitStream)
 {
-	SerializeTuple( std::tuple<float, float, float>( Value->x, Value->y, Value->z ), BitStream);
+	SerializeTuple( std::tuple<float, float, float>( Value->X, Value->Y, Value->Z ), BitStream);
 	return true;
 }
 
@@ -44,9 +44,9 @@ bool DBitSerializer<SVector3f>::DeserializeOverride(DBitStream& BitStream)
 {
 	std::tuple<float, float, float> Tuple;
 	DeserializeTuple(Tuple, BitStream);
-	Value->x = std::get<0>(Tuple);
-	Value->y = std::get<1>(Tuple);
-	Value->z = std::get<2>(Tuple);
+	Value->X = std::get<0>(Tuple);
+	Value->Y = std::get<1>(Tuple);
+	Value->Z = std::get<2>(Tuple);
 	return true;
 }
 
@@ -60,7 +60,7 @@ bool DBitSerializer<SQuaternionf>::HasSerializeOverride()
 template<>
 bool DBitSerializer<SQuaternionf>::SerializeOverride(DBitStream& BitStream)
 {
-	SerializeTuple(std::tuple<float, float, float, float>(Value->x, Value->y, Value->z, Value->w), BitStream);
+	SerializeTuple(std::tuple<float, float, float, float>(Value->X, Value->Y, Value->Z, Value->W), BitStream);
 	return true;
 }
 
@@ -69,10 +69,10 @@ bool DBitSerializer<SQuaternionf>::DeserializeOverride(DBitStream& BitStream)
 {
 	std::tuple<float, float, float, float> Tuple;
 	DeserializeTuple(Tuple, BitStream);
-	Value->x = std::get<0>(Tuple);
-	Value->y = std::get<1>(Tuple);
-	Value->z = std::get<2>(Tuple);
-	Value->w = std::get<3>(Tuple);
+	Value->X = std::get<0>(Tuple);
+	Value->Y = std::get<1>(Tuple);
+	Value->Z = std::get<2>(Tuple);
+	Value->W = std::get<3>(Tuple);
 	return true;
 }
 
@@ -86,11 +86,17 @@ bool DBitSerializer<SEulerRotationf>::HasSerializeOverride()
 template<>
 bool DBitSerializer<SEulerRotationf>::SerializeOverride(DBitStream& BitStream)
 {
-	return DBitSerializer<SVector3f>(Value).Serialize(BitStream);
+	SerializeTuple(std::tuple<float, float, float>(Value->Pitch, Value->Yaw, Value->Roll), BitStream);
+	return true;
 }
 
 template<>
 bool DBitSerializer<SEulerRotationf>::DeserializeOverride(DBitStream& BitStream)
 {
-	return DBitSerializer<SVector3f>(Value).Deserialize(BitStream);
+	std::tuple<float, float, float> Tuple;
+	DeserializeTuple(Tuple, BitStream);
+	Value->Pitch = std::get<0>(Tuple);
+	Value->Yaw = std::get<1>(Tuple);
+	Value->Roll = std::get<2>(Tuple);
+	return true;
 }

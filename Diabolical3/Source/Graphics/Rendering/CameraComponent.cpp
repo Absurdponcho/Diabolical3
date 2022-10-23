@@ -96,7 +96,7 @@ SMatrix44f DCameraComponent::GetViewMatrix()
 
 	if (!bViewMatrixCached)
 	{
-		SEulerRotationf EulerRotation = ThisTransform.GetEulerRotation() * 0.0174533f;
+		SEulerRotationf EulerRotation = ThisTransform.GetEulerRotation();
 		//FPS camera:  RotationX(pitch) * RotationY(yaw)
 		SQuaternionf qPitch = SQuaternionf::FromAngleAxis(EulerRotation.Pitch, SVector3f(1, 0, 0));
 		SQuaternionf qYaw = SQuaternionf::FromAngleAxis(EulerRotation.Yaw, SVector3f(0, 1, 0));
@@ -109,7 +109,7 @@ SMatrix44f DCameraComponent::GetViewMatrix()
 		SMatrix44f translate = SMatrix44f::Identity;
 		translate = SMatrix44f::Translate(translate, -ThisTransform.GetPosition());
 
-		CachedViewMatrix = rotate * translate;
+		CachedViewMatrix = translate * rotate;
 		bViewMatrixCached = true;
 	}
 	return CachedViewMatrix;

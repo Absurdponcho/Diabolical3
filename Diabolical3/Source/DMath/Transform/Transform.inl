@@ -44,7 +44,7 @@ public:
 	MEulerRotation<T> GetEulerRotation() const
 	{
 		MEulerRotation<T> Euler;
-		//Rotation.Normalized().ToEuler(Euler);
+		Euler = QuaternionToEuler(Rotation.Normalized());
 		return Euler;
 	}
 

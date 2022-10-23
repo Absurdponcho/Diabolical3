@@ -5,7 +5,7 @@
 #include "CameraComponent.h"
 #include "MaterialInstance.h"
 #include "Graphics/Rendering/RenderThread.h"
-
+#include <GLM/glm.hpp>
 
 DRegisteredObject<DCubeComponent> RegisteredObject = DRegisteredObject<DCubeComponent>();
 DRegisteredObjectBase* DCubeComponent::GetRegisteredObject() const
@@ -63,8 +63,10 @@ void DCubeComponent::Render(DObjectPtr<DCameraComponent> CameraComponent)
 				return;
 			}
 
-			SMatrix44f MVPMatrix = ProjectionMatrix * ViewMatrix * ModelMatrix;
+			SMatrix44f MVPMatrix = ModelMatrix * ViewMatrix * ProjectionMatrix;
+
 			bool bUniformSuccess = WeakThis->MaterialInstance->SetUniform("MVP", MVPMatrix);
+
 			Check(bUniformSuccess);
 			if (!bUniformSuccess)
 			{

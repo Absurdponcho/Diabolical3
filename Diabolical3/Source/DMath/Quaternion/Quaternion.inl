@@ -63,40 +63,6 @@ public:
 		return { X * OneOverLen, Y * OneOverLen, Z * OneOverLen, W * OneOverLen };
 	}
 
-	/*MEulerRotation<T> ToEuler() const
-	{
-		MEulerRotation<T> OutRotation;
-		const T SingularityTest = Z * X - W * Y;
-		const T YawY = T(2.f) * (W * Z + X * Y);
-		const T YawX = (T(1.0) - T(2.0) * ((Y * Y) + (Z * Z)));
-
-		const T SingularityThreshold = T(0.4999995);
-		const T RadToDeg = T(57.2958);
-		float Pitch, Yaw, Roll;
-
-		if (SingularityTest < -SingularityThreshold)
-		{
-			Pitch = T(-90.0);
-			Yaw = (atan2(YawY, YawX) * RadToDeg);
-			Roll = SEulerRotationf::NormalizeAxis(-Yaw - (T(2.0) * atan2(X, W) * RadToDeg));
-		}
-		else if (SingularityTest > SingularityThreshold)
-		{
-			Pitch = T(90.0);
-			Yaw = (atan2(YawY, YawX) * RadToDeg);
-			Roll = SEulerRotationf::NormalizeAxis(Yaw - (T(2.0) * atan2(X, W) * RadToDeg));
-		}
-		else
-		{
-			Pitch = (asin(T(2.0) * SingularityTest) * RadToDeg);
-			Yaw = (atan2(YawY, YawX) * RadToDeg);
-			Roll = (atan2(T(-2.0) * (W * X + Y * Z), (T(1.0) - T(2.0) * ((X * X) + (Y * Y)))) * RadToDeg);
-		}
-
-		OutRotation = { Pitch, Yaw, Roll };
-		return OutRotation;
-	}*/
-
 	MMatrix44<T> ToMatrix() const
 	{
 		MMatrix44<T> Result;
@@ -130,6 +96,17 @@ public:
 		Result.Values[3][1] = T(0);
 		Result.Values[3][2] = T(0);
 		Result.Values[3][3] = T(1);
+
+		return Result;
+	}
+
+	MVector3<T> RotateVector(const MVector3<T>& InVec) const
+	{
+		MVector3<T> Result;
+		
+		const MVector3<T> Q(X, Y, Z);
+		const MVector3<T> TT = Q.Cross(InVec) * T(2.0);
+		Result = InVec + (TT * W) + Q.Cross(TT);
 
 		return Result;
 	}

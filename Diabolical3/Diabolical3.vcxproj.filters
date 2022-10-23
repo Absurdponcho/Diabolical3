@@ -135,6 +135,9 @@
     <ClCompile Include="Source\DMath\Matrix\MatrixConsts.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\DMath\MathSerialize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Online\Socket\DSocket.h">
@@ -293,6 +296,12 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="Source\DMath\Transform\Transform.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="Source\DMath\MathFuncs.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="Source\DMath\MathSerialize.inl">
       <Filter>Header Files</Filter>
     </None>
   </ItemGroup>

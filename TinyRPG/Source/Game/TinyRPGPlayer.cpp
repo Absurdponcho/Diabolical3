@@ -27,7 +27,7 @@ void DTinyRPGPlayer::Tick(const STickInfo& TickInfo)
 		if (IsRemoteClient())
 		{
 			SVector3f NormalizedInputVector = InputVector.Normalized();
-			//NormalizedInputVector = Transform.RotateVector(NormalizedInputVector);
+			NormalizedInputVector = Transform.Rotation.RotateVector(NormalizedInputVector);
 			NormalizedInputVector.X = NormalizedInputVector.X * TickInfo.DeltaTime * 10.0f;
 			NormalizedInputVector.Y = NormalizedInputVector.Y * TickInfo.DeltaTime * 10.0f;
 			NormalizedInputVector.Z = NormalizedInputVector.Z * TickInfo.DeltaTime * 10.0f;
@@ -36,14 +36,12 @@ void DTinyRPGPlayer::Tick(const STickInfo& TickInfo)
 		else
 		{
 			SVector3f NormalizedInputVector = InputVector.Normalized();
-			//NormalizedInputVector = Transform.RotateVector(NormalizedInputVector);
+			NormalizedInputVector = Transform.Rotation.RotateVector(NormalizedInputVector);
 			Transform.Position.X += NormalizedInputVector.X * TickInfo.DeltaTime * 10.0f;
 			Transform.Position.Y += NormalizedInputVector.Y * TickInfo.DeltaTime * 10.0f;
 			Transform.Position.Z += NormalizedInputVector.Z * TickInfo.DeltaTime * 10.0f;
 			SetTransform(Transform);
 		}
-		
-
 	}
 }
 
@@ -170,8 +168,8 @@ SInputHandleResult DTinyRPGPlayer::AxisListener(const SAxisEvent& AxisEvent)
 	case EAxisCode::AC_Mouse:
 		STransformf Transform = GetTransform();
 		SEulerRotationf EulerRotation = Transform.GetEulerRotation();
-		EulerRotation.Yaw += AxisEvent.MotionX * 0.15f;
-		EulerRotation.Pitch += AxisEvent.MotionY * 0.15f;
+		EulerRotation.Yaw -= AxisEvent.MotionX * 0.15f;
+		EulerRotation.Pitch -= AxisEvent.MotionY * 0.15f;
 		Transform.SetEulerRotation(EulerRotation);
 		SetTransform(Transform);
 		break;

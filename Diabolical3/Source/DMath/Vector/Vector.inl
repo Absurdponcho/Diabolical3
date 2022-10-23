@@ -124,6 +124,13 @@ public:
 		return MVector3<T>(X / ThisLength, Y / ThisLength, Z / ThisLength);
 	}
 
+	MVector3<T> Cross(const MVector3<T>& Other) const
+	{
+		return { Y * Other.Z - Z * Other.Y,
+				Z * Other.X - X * Other.Z,
+				X * Other.Y - Y * Other.X };
+	}
+
 	MVector3<T> operator-() const
 	{
 		return { -X, -Y, -Z };

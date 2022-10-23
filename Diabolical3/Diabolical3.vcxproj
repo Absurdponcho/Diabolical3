@@ -177,6 +177,7 @@
     <ClCompile Include="Source\Graphics\WindowSDL.cpp" />
     <ClCompile Include="Source\Input\Input.cpp" />
     <ClCompile Include="Source\Logging\Logging.cpp" />
+    <ClCompile Include="Source\DMath\MathSerialize.cpp" />
     <ClCompile Include="Source\Online\Client.cpp" />
     <ClCompile Include="Source\Online\NetworkManager.cpp" />
     <ClCompile Include="Source\Online\Server.cpp" />
@@ -248,10 +249,12 @@
     <ClInclude Include="Source\World\World.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Source\DMath\MathFuncs.inl" />
     <None Include="Source\DMath\Matrix\Matrix.inl" />
     <None Include="Source\DMath\Quaternion\Quaternion.inl" />
     <None Include="Source\DMath\Transform\Transform.inl" />
     <None Include="Source\Input\KeyCodes.inl" />
+    <None Include="Source\DMath\MathSerialize.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

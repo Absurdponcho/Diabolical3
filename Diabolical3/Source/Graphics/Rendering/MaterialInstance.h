@@ -4,6 +4,7 @@
 #include "Types/DString.h"
 #include "DMath/Math.h"
 #include "Logging/Logging.h"
+#include <GLM/glm.hpp>
 
 class DMaterialUniformValueBase 
 {
@@ -57,7 +58,7 @@ inline void DMaterialUniformValue<float>::ApplyInternal() { glUniform1f(UniformL
 template <>
 inline void DMaterialUniformValue<SMatrix44f>::ApplyInternal() 
 {	
-	glUniformMatrix4fv(UniformLocation, 1, GL_FALSE, (const GLfloat*) & Value);
+	glUniformMatrix4fv(UniformLocation, 1, GL_FALSE, (const GLfloat*) & Value.Values);
 }
 
 class DMaterialInstance

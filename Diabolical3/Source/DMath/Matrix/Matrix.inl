@@ -92,7 +92,7 @@ public:
 
 		T frustumDepth = Far - Near;
 		T oneOverDepth = T(1.0) / frustumDepth;
-		bool leftHanded = true;
+		bool leftHanded = false;
 
 		Result.Values[1][1] = T(1.0) / std::tan(T(0.5) * Fov);
 		Result.Values[0][0] = (leftHanded ? T(1.0) : T(-1.0)) * Result.Values[1][1] / Aspect;

@@ -9,6 +9,7 @@ namespace DMath
 	#include "Quaternion/Quaternion.inl"
 	#include "Transform/Transform.inl"
 	#include "EulerRotation/EulerRotation.inl"
+	#include "MathFuncs.inl"
 
 	typedef MVector4<float> SVector4f;
 	typedef MVector4<double> SVector4d; 
@@ -33,6 +34,9 @@ namespace DMath
 
 	typedef MTransform<float> STransformf;
 	typedef MTransform<double> STransformd;
+
 }
 
 using namespace DMath;
+
+#include "MathSerialize.inl"
