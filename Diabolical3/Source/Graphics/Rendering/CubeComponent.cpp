@@ -5,7 +5,6 @@
 #include "CameraComponent.h"
 #include "MaterialInstance.h"
 #include "Graphics/Rendering/RenderThread.h"
-#include <GLM/glm.hpp>
 
 DRegisteredObject<DCubeComponent> RegisteredObject = DRegisteredObject<DCubeComponent>();
 DRegisteredObjectBase* DCubeComponent::GetRegisteredObject() const

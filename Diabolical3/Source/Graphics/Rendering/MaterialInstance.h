@@ -4,7 +4,6 @@
 #include "Types/DString.h"
 #include "DMath/Math.h"
 #include "Logging/Logging.h"
-#include <GLM/glm.hpp>
 
 class DMaterialUniformValueBase 
 {
