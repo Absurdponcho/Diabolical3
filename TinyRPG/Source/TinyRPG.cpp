@@ -57,8 +57,8 @@ int main(int argc, char* argv[])
 					MeshObject->RegisterComponent(MeshComponent);
 
 					STransformf MeshTransform;
-					MeshTransform.Position = { x * 2, 0, -z * 2 };
-					MeshTransform.Scale = SVector3f::OneVector;
+					MeshTransform.Position = { x * 2, -1, -z * 2 };
+					MeshTransform.Scale = SVector3f(5, 1, 2);
 					MeshObject->SetTransform(MeshTransform);
 
 					MeshObjects.Add(MeshObject);
@@ -76,8 +76,8 @@ int main(int argc, char* argv[])
 					MeshObject->RegisterComponent(MeshComponent);
 
 					STransformf MeshTransform;
-					MeshTransform.Position = { x * 2, 0, -z * 2 };
-					MeshTransform.Scale = SVector3f::OneVector;
+					MeshTransform.Position = { x * 2, -1, -z * 2 };
+					MeshTransform.Scale = SVector3f(5, 1, 2);
 					MeshObject->SetTransform(MeshTransform);
 
 					MeshObjects.Add(MeshObject);

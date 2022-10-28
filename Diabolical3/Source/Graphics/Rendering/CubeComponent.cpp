@@ -66,11 +66,20 @@ void DCubeComponent::Render(DObjectPtr<DCameraComponent> CameraComponent)
 
 			bool bUniformSuccess = WeakThis->MaterialInstance->SetUniform("MVP", MVPMatrix);
 
-			Check(bUniformSuccess);
+			//Check(bUniformSuccess);
 			if (!bUniformSuccess)
 			{
-				LOG_ERR("Failed to set uniform \"MVP\"");
-				return;
+				//LOG_ERR("Failed to set uniform \"MVP\"");
+				//return;
+			}
+			
+			bUniformSuccess = WeakThis->MaterialInstance->SetUniform("ModelMat", ModelMatrix);
+
+			//Check(bUniformSuccess);
+			if (!bUniformSuccess)
+			{
+				//LOG_ERR("Failed to set uniform \"ModelMat\"");
+				//return;
 			}
 
 			WeakThis->MaterialInstance->Bind();

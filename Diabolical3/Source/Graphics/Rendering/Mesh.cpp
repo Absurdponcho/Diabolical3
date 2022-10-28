@@ -57,11 +57,12 @@ void DMesh::GenerateBuffers()
 		glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer);
 
 		// Create the buffer
-		glBufferData(GL_ARRAY_BUFFER, Vertices.SizeBytes() + UVs.SizeBytes(), NULL, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, Vertices.SizeBytes() + UVs.SizeBytes() + Normals.SizeBytes(), NULL, GL_STATIC_DRAW);
 
-		// Put both Vertices and UVs in
+		// Put Vertices, UVs and normals in
 		glBufferSubData(GL_ARRAY_BUFFER, 0, Vertices.SizeBytes(), Vertices.GetData());
 		glBufferSubData(GL_ARRAY_BUFFER, Vertices.SizeBytes(), UVs.SizeBytes(), UVs.GetData());
+		glBufferSubData(GL_ARRAY_BUFFER, Vertices.SizeBytes() + UVs.SizeBytes(), Normals.SizeBytes(), Normals.GetData());
 	}
 
 	{
@@ -71,12 +72,16 @@ void DMesh::GenerateBuffers()
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, Indices.SizeBytes(), Indices.GetData(), GL_STATIC_DRAW);
 	}
 
-	// vertices attribute pointer. location is 0, size is 3, stride is 5, offset is 0
+	// vertices attribute pointer. location is 0, size is 3, stride is 3, offset is 0
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	// uvs attribute pointer. location is 1, size is 2, stride is 5, offset is size of vertices
+	// uvs attribute pointer. location is 1, size is 2, stride is 2, offset is size of vertices
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)Vertices.SizeBytes());
 	glEnableVertexAttribArray(1);
+
+	// normals attribute pointer. location is 1, size is 3, stride is 3, offset is size of vertices
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(Vertices.SizeBytes() + UVs.SizeBytes()));
+	glEnableVertexAttribArray(2);
 }
 

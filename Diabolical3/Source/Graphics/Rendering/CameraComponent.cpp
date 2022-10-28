@@ -4,6 +4,8 @@
 #include "Graphics/Rendering/RenderComponent.h"
 #include "World/World.h"
 #include "Graphics/Window.h"
+#include "AssetManager/AssetManager.h"
+#include "Graphics/Rendering/MaterialInstance.h"
 
 DRegisteredObject<DCameraComponent> RegisteredObject = DRegisteredObject<DCameraComponent>();
 DRegisteredObjectBase* DCameraComponent::GetRegisteredObject() const
@@ -49,12 +51,12 @@ void DCameraComponent::RenderScene(DWeakPtr<DWindow> WindowWeak)
 	uint32_t WindowWidth, WindowHeight;
 	Window->GetWidthHeight(WindowWidth, WindowHeight);
 
-	if (!RenderTarget.IsValid() || WindowWidth != RenderTarget->GetWidth() || WindowHeight != RenderTarget->GetHeight())
+	if (!GBuffer.IsValid() || WindowWidth != GBuffer->GetWidth() || WindowHeight != GBuffer->GetHeight())
 	{
-		RenderTarget = std::make_shared<DRenderTarget>(WindowWidth, WindowHeight);
+		GBuffer = std::make_shared<DRenderTargetGBuffer>(WindowWidth, WindowHeight);
 	}
 
-	RenderTarget->Bind();
+	GBuffer->Bind();
 
 	DVector<DObjectPtr<DRenderComponent>> RenderComponents = GetParent()->GetOwnerWorld()->GetAllComponentsOfType<DRenderComponent>();
 	for (DObjectPtr<DRenderComponent>& RenderComponent : RenderComponents)
@@ -62,7 +64,117 @@ void DCameraComponent::RenderScene(DWeakPtr<DWindow> WindowWeak)
 		RenderComponent->Render(GetWeakThis());
 	}
 
-	RenderTarget->DrawToScreen();
+	//GBuffer->DrawToScreen();
+
+	if (!LightpassBuffer1.IsValid() || WindowWidth != LightpassBuffer1->GetWidth() || WindowHeight != LightpassBuffer1->GetHeight())
+	{
+		LightpassBuffer1 = std::make_shared<DRenderTargetAlbedo>(WindowWidth, WindowHeight);
+	}
+
+	if (!LightpassBuffer2.IsValid() || WindowWidth != LightpassBuffer2->GetWidth() || WindowHeight != LightpassBuffer2->GetHeight())
+	{
+		LightpassBuffer2 = std::make_shared<DRenderTargetAlbedo>(WindowWidth, WindowHeight);
+	}
+
+	static DSharedPtr<DMaterial> LightMaterial;
+	if (!LightMaterial.IsValid())
+	{
+		DString VertexShader = DAssetManager::Get().SynchronousLoadAsset("Assets/Shaders/QuadCopy.vert")->AsString();
+		DString FragmentShader = DAssetManager::Get().SynchronousLoadAsset("Assets/Shaders/LightPass.frag")->AsString();
+
+		Check(VertexShader.Length() > 0);
+		Check(FragmentShader.Length() > 0);
+
+		LightMaterial = std::make_shared<DMaterial>();
+		LightMaterial->BuildShader(VertexShader, FragmentShader);
+	}
+
+	LightpassBuffer1->Bind();
+
+	DSharedPtr<DMaterialInstance> LightMaterialInstance = new DMaterialInstance(LightMaterial);
+	DEngine::RenderThread->Invoke(DAction<int>([=](int a)
+		{
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, GBuffer->GetAlbedoTexture());
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, GBuffer->GetPositionTexture());
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, GBuffer->GetNormalTexture());
+
+			glActiveTexture(GL_TEXTURE3);
+			glBindTexture(GL_TEXTURE_2D, 0);
+
+			//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			//glViewport(0, 0, Width, Height);
+
+			LightMaterialInstance->SetUniform("albedoTexture", 0);
+			LightMaterialInstance->SetUniform("positionTexture", 1);
+			LightMaterialInstance->SetUniform("normalTexture", 2);
+			LightMaterialInstance->SetUniform("currentAlbedo", 3);
+			LightMaterialInstance->SetUniform("lightPos", SVector3f(5, 0, 0));
+			LightMaterialInstance->SetUniform("lightColor", SVector3f(1, 1, 1));
+
+			LightMaterialInstance->Bind();
+			MeshPrimitives::Quad->Draw();
+		}));
+
+	LightpassBuffer2->Bind();
+
+	DEngine::RenderThread->Invoke(DAction<int>([=](int a)
+		{
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, GBuffer->GetAlbedoTexture());
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, GBuffer->GetPositionTexture());
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, GBuffer->GetNormalTexture());
+
+			glActiveTexture(GL_TEXTURE3);
+			glBindTexture(GL_TEXTURE_2D, LightpassBuffer1->GetAlbedoTexture());
+
+			//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			//glViewport(0, 0, Width, Height);
+
+			LightMaterialInstance->SetUniform("albedoTexture", 0);
+			LightMaterialInstance->SetUniform("positionTexture", 1);
+			LightMaterialInstance->SetUniform("normalTexture", 2);
+			LightMaterialInstance->SetUniform("currentAlbedo", 3);
+			LightMaterialInstance->SetUniform("lightPos", SVector3f(5, 0, 2));
+			LightMaterialInstance->SetUniform("lightColor", SVector3f(1, 0, 1));
+
+			LightMaterialInstance->Bind();
+			MeshPrimitives::Quad->Draw();
+		}));
+
+	LightpassBuffer1->Bind();
+
+	DEngine::RenderThread->Invoke(DAction<int>([=](int a)
+		{
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, GBuffer->GetAlbedoTexture());
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, GBuffer->GetPositionTexture());
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, GBuffer->GetNormalTexture());
+
+			glActiveTexture(GL_TEXTURE3);
+			glBindTexture(GL_TEXTURE_2D, LightpassBuffer2->GetAlbedoTexture());
+
+			//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			//glViewport(0, 0, Width, Height);
+
+			LightMaterialInstance->SetUniform("albedoTexture", 0);
+			LightMaterialInstance->SetUniform("positionTexture", 1);
+			LightMaterialInstance->SetUniform("normalTexture", 2);
+			LightMaterialInstance->SetUniform("currentAlbedo", 3);
+			LightMaterialInstance->SetUniform("lightPos", SVector3f(5, 0, 4));
+			LightMaterialInstance->SetUniform("lightColor", SVector3f(0, 1, 0));
+
+			LightMaterialInstance->Bind();
+			MeshPrimitives::Quad->Draw();
+		}));
+
+	LightpassBuffer1->DrawToScreen();
 }
 
 void DCameraComponent::PostConstruct()

@@ -172,6 +172,8 @@
     <ClCompile Include="Source\Graphics\Rendering\Mesh.cpp" />
     <ClCompile Include="Source\Graphics\Rendering\MeshPrimitives.cpp" />
     <ClCompile Include="Source\Graphics\Rendering\RenderComponent.cpp" />
+    <ClCompile Include="Source\Graphics\Rendering\RenderTargetAlbedo.cpp" />
+    <ClCompile Include="Source\Graphics\Rendering\RenderTargetGBuffer.cpp" />
     <ClCompile Include="Source\Graphics\Rendering\RenderThread.cpp" />
     <ClCompile Include="Source\Graphics\Window.cpp" />
     <ClCompile Include="Source\Graphics\WindowSDL.cpp" />
@@ -216,6 +218,8 @@
     <ClInclude Include="Source\Graphics\Rendering\MeshPrimitives.h" />
     <ClInclude Include="Source\Graphics\Rendering\RenderComponent.h" />
     <ClInclude Include="Source\Graphics\Rendering\RenderTarget.h" />
+    <ClInclude Include="Source\Graphics\Rendering\RenderTargetAlbedo.h" />
+    <ClInclude Include="Source\Graphics\Rendering\RenderTargetGBuffer.h" />
     <ClInclude Include="Source\Graphics\Rendering\RenderThread.h" />
     <ClInclude Include="Source\Graphics\Window.h" />
     <ClInclude Include="Source\Graphics\WindowSDL.h" />
