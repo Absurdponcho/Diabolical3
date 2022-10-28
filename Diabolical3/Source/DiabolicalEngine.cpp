@@ -62,10 +62,10 @@ void DEngine::ManageAllTickFunctions()
 
 		// Send syncvars every 3 ticks for performance
 		static int SyncVarIndex = 0;
-		if (SyncVarIndex % 3 == 0)
-		{
+		//if (SyncVarIndex % 3 == 0)
+		//{
 			Server->SendDirtySyncVars();
-		}
+		//}
 		SyncVarIndex++;
 
 	}

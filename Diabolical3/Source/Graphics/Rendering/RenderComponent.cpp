@@ -9,7 +9,7 @@ DRegisteredObjectBase* DRenderComponent::GetRegisteredObject() const
 
 DRenderComponent::DRenderComponent()
 {
-	bIsNetworked = true;
+	bIsNetworked = false;
 }
 
 void DRenderComponent::RegisterSyncVars(DVector<DSyncVarBase*>& SyncVars)

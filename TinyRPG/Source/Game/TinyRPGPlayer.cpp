@@ -5,6 +5,8 @@
 #include "Graphics/Window.h"
 #include "Time/Time.h"
 #include "DMath/Math.h"
+#include "Graphics/Rendering/PointLightComponent.h"
+
 
 DRegisteredObject<DTinyRPGPlayer> RegisteredObject = DRegisteredObject<DTinyRPGPlayer>();
 DRegisteredObjectBase* DTinyRPGPlayer::GetRegisteredObject() const
@@ -15,6 +17,9 @@ DRegisteredObjectBase* DTinyRPGPlayer::GetRegisteredObject() const
 void DTinyRPGPlayer::PostConstruct()
 {
 	DPlayer::PostConstruct();
+
+	auto LightComponent = DObject::CreateNew<DPointLightComponent>("Player Light");
+	RegisterComponent(LightComponent);
 }
 
 void DTinyRPGPlayer::Tick(const STickInfo& TickInfo)

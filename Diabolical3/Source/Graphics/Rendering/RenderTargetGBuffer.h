@@ -18,7 +18,7 @@ public:
 		}
 	}
 
-	virtual bool Bind() override;
+	virtual bool Bind(bool bClearBuffer = true) override;
 
 	virtual void DrawToScreen() const override;
 

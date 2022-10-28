@@ -36,7 +36,7 @@ DRenderTargetAlbedo::DRenderTargetAlbedo(uint32_t InWidth, uint32_t InHeight)
 		}));
 }
 
-bool DRenderTargetAlbedo::Bind()
+bool DRenderTargetAlbedo::Bind(bool bClearBuffer)
 {
 	if (!FramebufferName || !AlbedoTexture || !Width || !Height || !bIsValid)
 	{
@@ -47,8 +47,11 @@ bool DRenderTargetAlbedo::Bind()
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
 			glViewport(0, 0, Width, Height);
-			glClearColor(0.0, 0.0, 0.0, 1.0);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			if (bClearBuffer)
+			{
+				glClearColor(0.0, 0.0, 0.0, 1.0);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			}
 
 		}));
 

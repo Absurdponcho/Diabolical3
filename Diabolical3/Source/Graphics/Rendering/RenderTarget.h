@@ -18,7 +18,7 @@ public:
 	DRenderTarget()
 	{}
 
-	virtual bool Bind()
+	virtual bool Bind(bool bClearBuffer = true)
 	{
 		return false;
 	}

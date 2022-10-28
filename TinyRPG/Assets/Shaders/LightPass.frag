@@ -19,3 +19,4 @@ void main()
 	vec4 currentColor = texture( currentAlbedo, UV );
 	color = vec4((texture( albedoTexture, UV ).xyz * lightColor) * lightDistSquared, 1.0) + currentColor;
 }
+

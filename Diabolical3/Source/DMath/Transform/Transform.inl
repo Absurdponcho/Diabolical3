@@ -27,7 +27,7 @@ public:
 		MMatrix44<T> ModelMatrix = MMatrix44<T>::Identity;
 		ModelMatrix = MMatrix44<T>::Translate(ModelMatrix, Position);
 		ModelMatrix = MMatrix44<T>::Scale(ModelMatrix, Scale);
-		ModelMatrix = ModelMatrix * Rotation.ToMatrix();
+		ModelMatrix = Rotation.ToMatrix() * ModelMatrix;
 		return ModelMatrix;
 	}
 
