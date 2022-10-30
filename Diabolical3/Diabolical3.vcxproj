@@ -166,6 +166,7 @@
     <ClCompile Include="Source\FileSystem\Filesystem.cpp" />
     <ClCompile Include="Source\Game\GameMode.cpp" />
     <ClCompile Include="Source\Graphics\Rendering\CubeComponent.cpp" />
+    <ClCompile Include="Source\Graphics\Rendering\DirectionalLightComponent.cpp" />
     <ClCompile Include="Source\Graphics\Rendering\LightComponent.cpp" />
     <ClCompile Include="Source\Graphics\Rendering\MeshComponent.cpp" />
     <ClCompile Include="Source\Graphics\Rendering\CameraComponent.cpp" />
@@ -212,6 +213,7 @@
     <ClInclude Include="Source\DMath\Vector\Vector.inl" />
     <ClInclude Include="Source\FileSystem\Filesystem.h" />
     <ClInclude Include="Source\Game\GameMode.h" />
+    <ClInclude Include="Source\Graphics\Rendering\DirectionalLightComponent.h" />
     <ClInclude Include="Source\Graphics\Rendering\LightComponent.h" />
     <ClInclude Include="Source\Graphics\Rendering\MeshComponent.h" />
     <ClInclude Include="Source\Graphics\Rendering\CameraComponent.h" />

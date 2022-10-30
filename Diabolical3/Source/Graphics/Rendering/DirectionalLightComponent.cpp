@@ -1,49 +1,50 @@
-#include "PointLightComponent.h"
+#include "DirectionalLightComponent.h"
 #include "DiabolicalEngine.h"
 #include "Graphics/Rendering/RenderThread.h"
 #include "AssetManager/AssetManager.h"
 #include "World/SceneObject.h"
 
-DRegisteredObject<DPointLightComponent> RegisteredObject = DRegisteredObject<DPointLightComponent>();
-DRegisteredObjectBase* DPointLightComponent::GetRegisteredObject() const
+DRegisteredObject<DDirectionalLightComponent> RegisteredObject = DRegisteredObject<DDirectionalLightComponent>();
+DRegisteredObjectBase* DDirectionalLightComponent::GetRegisteredObject() const
 {
 	return &RegisteredObject;
 }
 
-DPointLightComponent::DPointLightComponent()
+DDirectionalLightComponent::DDirectionalLightComponent()
 {
 	bIsNetworked = true;
 }
 
-void DPointLightComponent::RegisterSyncVars(DVector<DSyncVarBase*>& SyncVars)
+void DDirectionalLightComponent::RegisterSyncVars(DVector<DSyncVarBase*>& SyncVars)
 {
 	DLightComponent::RegisterSyncVars(SyncVars);
 	SyncVars.Add(&LightColor);
 	SyncVars.Add(&LightIntensity);
 }
 
-void DPointLightComponent::PerformLightPass(DSharedPtr<DRenderTargetGBuffer>& GBuffer, DSharedPtr<DRenderTargetAlbedo>& CurrentLightPassBuffer, DSharedPtr<DRenderTargetAlbedo>& DestinationLightPassBuffer)
+void DDirectionalLightComponent::PerformLightPass(DSharedPtr<DRenderTargetGBuffer>& GBuffer, DSharedPtr<DRenderTargetAlbedo>& CurrentLightPassBuffer, DSharedPtr<DRenderTargetAlbedo>& DestinationLightPassBuffer)
 {
 	Check(GBuffer.IsValid() && CurrentLightPassBuffer.IsValid() && DestinationLightPassBuffer.IsValid() && GBuffer->IsValid() && CurrentLightPassBuffer->IsValid() && DestinationLightPassBuffer->IsValid() && GetParent().IsValid());
 
 	if (!LightMaterialInstance.IsValid())
 	{
-		static DSharedPtr<DMaterial> PointLightMaterial;
-		if (!PointLightMaterial.IsValid())
+		static DSharedPtr<DMaterial> DirectionalLightMaterial;
+		if (!DirectionalLightMaterial.IsValid())
 		{
 			DString VertexShader = DAssetManager::Get().SynchronousLoadAsset("Assets/Shaders/QuadCopy.vert")->AsString();
-			DString FragmentShader = DAssetManager::Get().SynchronousLoadAsset("Assets/Shaders/PointLightPass.frag")->AsString();
+			DString FragmentShader = DAssetManager::Get().SynchronousLoadAsset("Assets/Shaders/DirectionalLightPass.frag")->AsString();
 
 			Check(VertexShader.Length() > 0);
 			Check(FragmentShader.Length() > 0);
 
-			PointLightMaterial = std::make_shared<DMaterial>();
-			PointLightMaterial->BuildShader(VertexShader, FragmentShader);
+			DirectionalLightMaterial = std::make_shared<DMaterial>();
+			DirectionalLightMaterial->BuildShader(VertexShader, FragmentShader);
 		}
-		LightMaterialInstance = new DMaterialInstance(PointLightMaterial);
+		LightMaterialInstance = new DMaterialInstance(DirectionalLightMaterial);
 	}
 	SVector3f LightPosition = GetParent()->GetTransform().GetPosition();
 	SVector3f LightColorValue = LightColor.Get();
+	SVector3f LightDir = GetParent()->GetTransform().GetRotation().RotateVector(SVector3f(0, 0, 1));
 	uint32_t CurrentLightPassBufferTexture = CurrentLightPassBuffer->GetAlbedoTexture();
 
 	DestinationLightPassBuffer->Bind(false);
@@ -66,7 +67,7 @@ void DPointLightComponent::PerformLightPass(DSharedPtr<DRenderTargetGBuffer>& GB
 			LightMaterialInstance->SetUniform("normalTexture", 2);
 			LightMaterialInstance->SetUniform("materialProperties", 3);
 			LightMaterialInstance->SetUniform("currentAlbedo", 4);
-			LightMaterialInstance->SetUniform("lightPos", LightPosition);
+			LightMaterialInstance->SetUniform("lightDir", LightDir);
 			LightMaterialInstance->SetUniform("lightColor", LightColorValue);
 
 			LightMaterialInstance->Bind();

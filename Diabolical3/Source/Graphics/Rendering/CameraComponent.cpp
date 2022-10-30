@@ -202,5 +202,5 @@ SMatrix44f DCameraComponent::GetViewMatrix()
 SMatrix44f DCameraComponent::GetPerspectiveProjectionMatrix(float AspectRatio)
 {
 	float DegToRad = 0.0174533f;
-	return SMatrix44f::Perspective(90.0f * DegToRad, AspectRatio, 0.001f, 1000.f);
+	return SMatrix44f::Perspective(90.0f * DegToRad, AspectRatio, 0.1f, 1000.f);
 }

@@ -18,6 +18,7 @@
 #include "Game/TinyRPGGameMode.h"
 #include "Graphics/Window.h"
 #include "Graphics/Rendering/PointLightComponent.h"
+#include "Graphics/Rendering/DirectionalLightComponent.h"
 
 int main(int argc, char* argv[])
 {
@@ -30,7 +31,7 @@ int main(int argc, char* argv[])
 
 	if (!DNetworkManager::IsDedicatedServer())
 	{
-		GameWindow = DWindowSDL::MakeNew("TinyRPG", 200, 200, 800, 600);
+		GameWindow = DWindowSDL::MakeNew("TinyRPG", 200, 200, 1920, 1080);
 		GameWindow->SetMouseCaptureMode(EMouseCaptureMode::MCM_CapturedHidden);
 	}
 
@@ -138,6 +139,18 @@ int main(int argc, char* argv[])
 					}
 				}
 			}
+
+			DObjectPtr<DSceneObject> LightObject = DObject::CreateNew<DSceneObject>("Directional Light Object");
+			GameWorld->AddSceneObject(LightObject);
+
+			STransformf MeshTransform = STransformf();
+			MeshTransform.SetEulerRotation({ 90, 0, 0 });
+			LightObject->SetTransform(MeshTransform);
+
+			auto LightComponent = DObject::CreateNew<DDirectionalLightComponent>("Test Light");
+			LightObject->RegisterComponent(LightComponent);
+
+			LightComponent->LightColor = SVector3f(1, 1, 1);
 		}
 	}
 	

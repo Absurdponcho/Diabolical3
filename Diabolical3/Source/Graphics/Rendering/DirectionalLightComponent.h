@@ -2,11 +2,11 @@
 #include "LightComponent.h"
 #include "Online/SyncVar.h"
 
-class DPointLightComponent : public DLightComponent
+class DDirectionalLightComponent : public DLightComponent
 {
 public:
-	DPointLightComponent();
-	virtual ~DPointLightComponent() {};
+	DDirectionalLightComponent();
+	virtual ~DDirectionalLightComponent() {};
 
 	virtual DRegisteredObjectBase* GetRegisteredObject() const override;
 

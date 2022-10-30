@@ -20,6 +20,9 @@ void main()
 
 	// Light calculations
 	vec3 position = texture( positionTexture, UV ).xyz;	
+	vec3 normal = texture( normalTexture, UV ).xyz;	
+	vec3 direction = normalize(position - lightPos);
+	float dirDot = clamp(-dot(normal, direction), 0.0, 1.0);
 	float lightDistSquared = 1.0 / (distance (position, lightPos) * distance (position, lightPos));
 	
 	// Previous light pass buffer
@@ -28,7 +31,7 @@ void main()
 	// Color from the GBuffer
 	vec3 albedoColor = texture( albedoTexture, UV ).xyz;	
 	
-	vec3 finalNonEmissiveColor = ((albedoColor * lightColor) * lightDistSquared) + currentColor;
+	vec3 finalNonEmissiveColor = ((albedoColor * lightColor) * lightDistSquared * dirDot) + currentColor;
 	
 	color = vec4((finalNonEmissiveColor * (1.0 - emissivity)) + (albedoColor * emissivity), 1.0);
 }
