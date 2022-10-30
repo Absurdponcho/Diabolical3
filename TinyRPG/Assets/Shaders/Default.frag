@@ -3,6 +3,7 @@
 layout(location = 0) out vec4 FragColor;
 layout(location = 1) out vec4 Pos;
 layout(location = 2) out vec4 Normal;
+layout(location = 3) out vec4 MaterialProperties;
 
 in vec3 LocalPos;
 in vec3 WorldPos;
@@ -19,4 +20,5 @@ void main()
     FragColor = vec4(col * mod(total, 2.0) + vec3(.5, .5, .5),1);
 	Pos = vec4(WorldPos, 1.0);
 	Normal = vec4(Normals, 1);
+	MaterialProperties = vec4(0, 0, 0, 0);
 }

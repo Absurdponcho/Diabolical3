@@ -59,6 +59,48 @@ void DCameraComponent::RenderScene(DWeakPtr<DWindow> WindowWeak)
 
 	GBuffer->Bind();
 
+	{	// Disable blending
+		DEngine::RenderThread->Invoke(DAction<int>([=](int a)
+			{
+				glDisable(GL_BLEND);
+			}));
+	}
+
+	{	// Skybox
+		static DSharedPtr<DMaterial> SkyBoxMaterial;
+		if (!SkyBoxMaterial.IsValid())
+		{
+			DString VertexShader = DAssetManager::Get().SynchronousLoadAsset("Assets/Shaders/SkyBox.vert")->AsString();
+			DString FragmentShader = DAssetManager::Get().SynchronousLoadAsset("Assets/Shaders/SkyBox.frag")->AsString();
+
+			Check(VertexShader.Length() > 0);
+			Check(FragmentShader.Length() > 0);
+
+			SkyBoxMaterial = std::make_shared<DMaterial>();
+			SkyBoxMaterial->BuildShader(VertexShader, FragmentShader);
+		}
+		DSharedPtr<DMaterialInstance> SkyBoxMaterialInstance = new DMaterialInstance(SkyBoxMaterial);
+
+		SMatrix44f SkyboxTransformMatrix = GetParent()->GetTransform().GetRotation().ToMatrix();
+
+		DEngine::RenderThread->Invoke(DAction<int>([=](int a)
+			{
+				SkyBoxMaterialInstance->SetUniform("TransformMatrix", SkyboxTransformMatrix);
+				SkyBoxMaterialInstance->SetUniform("UpColor", SVector3f(0.53, 0.81, 0.92));
+				SkyBoxMaterialInstance->SetUniform("DownColor", SVector3f(0.16, 0.32, 0.50));
+				SkyBoxMaterialInstance->SetUniform("HorizonColor", SVector3f(0.93, 0.92, 0.97));
+				SkyBoxMaterialInstance->Bind();
+
+				glCullFace(GL_FRONT);
+				MeshPrimitives::Cube->Draw();
+				glCullFace(GL_BACK);
+
+				// Clear the depth buffer after drawing the sky box, so we can draw things on top of it!
+				// Alternatively can draw the sky box at z=0.99999999, which will draw behind most things but this is easy.
+				glClear(GL_DEPTH_BUFFER_BIT);
+			}));
+	}
+
 	DVector<DObjectPtr<DRenderComponent>> RenderComponents = GetParent()->GetOwnerWorld()->GetAllComponentsOfType<DRenderComponent>();
 	for (DObjectPtr<DRenderComponent>& RenderComponent : RenderComponents)
 	{
@@ -73,7 +115,7 @@ void DCameraComponent::RenderScene(DWeakPtr<DWindow> WindowWeak)
 	if (!LightpassBuffer2.IsValid() || WindowWidth != LightpassBuffer2->GetWidth() || WindowHeight != LightpassBuffer2->GetHeight())
 	{
 		LightpassBuffer2 = std::make_shared<DRenderTargetAlbedo>(WindowWidth, WindowHeight);
-	}	
+	}
 
 	LightpassBuffer2->Bind(true);
 	LightpassBuffer1->Bind(true);

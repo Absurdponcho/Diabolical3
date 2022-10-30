@@ -52,6 +52,11 @@ public:
 		return NormalTexture;
 	}
 
+	virtual uint32_t GetMaterialPropertiesTexture() const
+	{
+		return MaterialPropertiesTexture;
+	}
+
 protected:
 	uint32_t Width = 0;
 	uint32_t Height = 0;
@@ -60,6 +65,7 @@ protected:
 	GLuint AlbedoTexture = 0;
 	GLuint PositionTexture = 0;
 	GLuint NormalTexture = 0;
+	GLuint MaterialPropertiesTexture = 0;
 	GLuint DepthRenderBuffer = 0;
 
 	bool bIsValid = false;

@@ -35,7 +35,6 @@ DSharedPtr<DMesh> MeshPrimitives::Cube = std::make_shared<DMesh>(
 	DVector<SVector2f>() // UVs
 	);
 
-
 DSharedPtr<DMesh> MeshPrimitives::Triangle = std::make_shared<DMesh>(
 	DVector<SVector3f>({{-.5, -.5, 0}, {.5, -.5, 0}, {0, .5, 0}}),
 	DVector<SVector3f>(),

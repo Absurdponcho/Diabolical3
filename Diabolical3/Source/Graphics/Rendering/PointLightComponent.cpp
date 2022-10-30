@@ -54,14 +54,17 @@ void DPointLightComponent::PerformLightPass(DSharedPtr<DRenderTargetGBuffer>& GB
 			glBindTexture(GL_TEXTURE_2D, GBuffer->GetPositionTexture());
 			glActiveTexture(GL_TEXTURE2);
 			glBindTexture(GL_TEXTURE_2D, GBuffer->GetNormalTexture());
-
 			glActiveTexture(GL_TEXTURE3);
+			glBindTexture(GL_TEXTURE_2D, GBuffer->GetMaterialPropertiesTexture());
+
+			glActiveTexture(GL_TEXTURE4);
 			glBindTexture(GL_TEXTURE_2D, CurrentLightPassBufferTexture);
 
 			LightMaterialInstance->SetUniform("albedoTexture", 0);
 			LightMaterialInstance->SetUniform("positionTexture", 1);
 			LightMaterialInstance->SetUniform("normalTexture", 2);
-			LightMaterialInstance->SetUniform("currentAlbedo", 3);
+			LightMaterialInstance->SetUniform("materialProperties", 3);
+			LightMaterialInstance->SetUniform("currentAlbedo", 4);
 			LightMaterialInstance->SetUniform("lightPos", LightPosition);
 			LightMaterialInstance->SetUniform("lightColor", LightColorValue);
 
